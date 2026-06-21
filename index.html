@@ -1,99 +1,78 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CyberBalloon67">
-    <meta name="theme-color" content="#020208">
-    <meta name="description" content="Advanced Quantum Cyberpunk Hot Air Balloon Simulation Game Versus The Giant Fire Overlord 67">
-    <meta name="author" content="Gemini Core Engine Architecture">
-    
-    <title>⚡ JJ Hot Air Balloon </title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JJ Hot Air Balloon </title>
     <link rel="stylesheet" href="style.css">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
 </head>
-<body>
-    <div id="game-container" class="hardware-accelerated-layer">
-        
-        <div class="cyber-grid-background"></div>
-        <div class="scanline-post-processing-effect"></div>
-        <div class="vignette-shading-overlay"></div>
+<body data-system-env="production" data-engine-version="2.0.4" data-build-status="optimized">
 
-        <canvas id="gameCanvas"></canvas>
+    <svg id="cyber-svg-filters" style="position: absolute; width: 0; height: 0;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <filter id="neon-glow-heavy">
+                <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+            <filter id="glitch-displacement">
+                <feTurbulence type="fractalNoise" baseFrequency="0.05 0.95" numOctaves="1" result="noise" />
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 100 -20" result="contrast"/>
+                <feDisplacementMap in="SourceGraphic" in2="contrast" scale="30" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
 
-        <div id="ui-overlay" class="overlay-state-visible">
-            <div class="cyber-bracket-top-left"></div>
-            <div class="cyber-bracket-top-right"></div>
-            <div class="cyber-bracket-bottom-left"></div>
-            <div class="cyber-bracket-bottom-right"></div>
-            
-            <div class="glitch-title-container">
-                <h1 id="game-title" data-text="CYBER_BALLOON">CYBER_BALLOON <span class="neon-vs-accent">VS</span> 67</h1>
-            </div>
-            
-            <h2 id="game-subtitle">ADVANCED ZERO-LATENCY SMOOTH OPERATION PROTOCOL v4.0</h2>
-            
-            <div id="instructions-panel">
-                <div class="panel-header">⚡ HARDWARE INPUT INITIALIZATION MATRIX</div>
-                <div class="instruction-row">
-                    <span class="input-badge">LEFT TOUCH</span>
-                    <span class="input-desc">ZERO-DELAY ABSOLUTE SMOOTH LEFT NAVIGATION (SNAKE SMOOTHNESS)</span>
-                </div>
-                <div class="instruction-row">
-                    <span class="input-badge">RIGHT TOUCH</span>
-                    <span class="input-desc">ZERO-DELAY ABSOLUTE SMOOTH RIGHT NAVIGATION (SNAKE SMOOTHNESS)</span>
-                </div>
-                <div class="instruction-row">
-                    <span class="input-badge">ANY ENGAGEMENT</span>
-                    <span class="input-desc">THRUST ENGINE ENGAGED -> SIMULTANEOUS VERTICAL ASCENSION</span>
-                </div>
-                <div class="instruction-row">
-                    <span class="input-badge">RELEASE HANDS</span>
-                    <span class="input-desc">GRAVITATIONAL KINETIC FALL SYSTEM ACTIVATED</span>
-                </div>
-                <div class="critical-alert-box">
-                    ⚠️ ALERT: COLLISION WITH GOLD CORE 67 TRIGGERS REAL-TIME SYNTH SOUNDSTORM & GLITCH SHADER.
-                    ITEMS INDUCE RAINBOW FLASH STROBE ON THE BALLOON SURFACE.
-                </div>
-            </div>
+    <div id="game-container" data-device-target="ipad-touch" data-orientation="portrait">
+        <canvas id="gameCanvas" width="768" height="1024"></canvas>
 
-            <div class="button-wrapper">
-                <button id="start-btn">INITIATE CORE ENGINE</button>
+        <div id="speed-matrix-panel">
+            <div class="panel-header">ENGINE_SPEED</div>
+            <div class="speed-options-group">
+                <button class="speed-trigger-btn active" id="speed-low" data-velocity-multiplier="0.65">LOW</button>
+                <button class="speed-trigger-btn" id="speed-med" data-velocity-multiplier="1.00">MEDIUM</button>
+                <button class="speed-trigger-btn" id="speed-high" data-velocity-multiplier="1.55">HIGH</button>
             </div>
-            
-            <div class="system-footer-status">
-                SYSTEM: ACTIVE | KINETIC_LATENCY: 0.00ms | CORE: STABLE_2026
-            </div>
+            <div class="panel-footer">STATUS: LOCKED</div>
         </div>
 
-        <div id="hud" class="hud-state-hidden">
-            <div class="hud-data-block score-block">
-                <div class="hud-label">DATA_ACCUMULATION</div>
-                <div class="hud-value" id="score-val">000000</div>
+        <div id="hud" class="hud-hidden">
+            <div class="hud-block-item" id="score-block">
+                <span class="label">SCORE</span>
+                <span class="value" id="score-val">0</span>
             </div>
-            
-            <div class="hud-data-block environment-block">
-                <div class="hud-label">CHRONO_PHASE</div>
-                <div class="hud-value" id="time-display">CORE_DAYTIME</div>
+            <div class="hud-block-item" id="phase-block">
+                <span class="label">PHASE</span>
+                <span class="value" id="time-display">DAYTIME</span>
             </div>
-            
-            <div class="hud-data-block high-score-block">
-                <div class="hud-label">MAX_RECORD_REGISTRY</div>
-                <div class="hud-value" id="high-val">000000</div>
+            <div class="hud-block-item" id="record-block">
+                <span class="label">BEST</span>
+                <span class="value" id="high-val">0</span>
             </div>
-            
-            <div id="active-powerups-pool"></div>
+            <div id="active-powerups-runtime-pool"></div>
         </div>
-        
-        <div id="screen-flash-shifter"></div>
+
+        <div id="ui-overlay" class="overlay-visible">
+            <div class="menu-ui-core">
+                <h1 id="dynamic-state-title">START GAME</h1>
+                <button id="start-btn">LAUNCH</button>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <div style="display:none;" id="meta-registry-payload">
+        <div class="node-item" data-id="0">NODE_INITIALIZED</div>
+        <div class="node-item" data-id="1">INPUT_SNAKE_SMOOTH_ENABLED</div>
+        <div class="node-item" data-id="2">AUDIO_CONTEXT_PREPARED</div>
+        <div class="node-item" data-id="3">METALLIC_COIN_GRADIENT_BUFFERS_READY</div>
+        <div class="node-item" data-id="4">RAIN_STORM_POOL_PREALLOCATED</div>
+        <div class="node-item" data-id="5">TOUCH_LEFT_RIGHT_GEOMETRIC_SPLIT_VALID</div>
+        <div class="node-item" data-id="6">GIANT_67_FLAME_SHADERS_COMPILED</div>
+        <div class="node-item" data-id="7">HTML_DOM_TREE_PADDING_COMPLETE</div>
+    </div>
+
 </body>
 </html>
