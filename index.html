@@ -345,13 +345,15 @@
                 DOM_CACHE.canvasNode.style.width = `${clientW}px`;
                 DOM_CACHE.canvasNode.style.height = `${clientH}px`;
             }
-
-            function executeSpeedShiftEvent(modeString, domAnchor) {
-                document.querySelectorAll('.speed-btn-node').forEach(b => b.classList.remove('active'));
-                if (domAnchor) domAnchor.classList.add('active');
-                STATE_ENGINE.activeSpeedMultiplier = SYSTEM_SETTING.VELOCITY_RATIO_MODES[modeString];
-                dispatchSynthesizedBeepSound('click_tick');
-            }
+function executeSpeedShiftEvent(modeString, domAnchor) {
+    document.querySelectorAll('.speed-btn-node').forEach(b => b.classList.remove('active'));
+    if (domAnchor) domAnchor.classList.add('active');
+    
+    // 这行是核心，确保你的系统设置里有 VELOCITY_RATIO_MODES 这个定义
+    STATE_ENGINE.activeSpeedMultiplier = SYSTEM_SETTING.VELOCITY_RATIO_MODES[modeString];
+    
+    console.log("Speed set to: " + modeString); // 加上这行，按了之后看浏览器控制台有没有显示
+}
 
             function executeManualEnvironmentShiftEvent() {
                 if (STATE_ENGINE.activeEnvironmentPhase === 'DAYTIME') STATE_ENGINE.activeEnvironmentPhase = 'TWILIGHT';
