@@ -1,77 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-framework="cyber-arcade-v3" data-hardware-acceleration="true">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JJ Hot Air Balloon </title>
+    <title>CYBERPUNK NEON ARCADE ENGINE PRO v3.0.0</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body data-system-env="production" data-engine-version="2.0.4" data-build-status="optimized">
+<body data-system-status="ready" data-audio-initialized="false" data-control-mode="snake-vector">
 
-    <svg id="cyber-svg-filters" style="position: absolute; width: 0; height: 0;" xmlns="http://www.w3.org/2000/svg">
+    <svg id="cyber-core-svg-filters" style="position: absolute; width: 0; height: 0; overflow: hidden;" xmlns="http://www.w3.org/2000/svg">
         <defs>
-            <filter id="neon-glow-heavy">
-                <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+            <filter id="neon-glow-ultra" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="8" result="blur1" />
+                <feGaussianBlur stdDeviation="15" result="blur2" />
+                <feGaussianBlur stdDeviation="25" result="blur3" />
                 <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
+                    <feMergeNode in="blur3" />
+                    <feMergeNode in="blur2" />
+                    <feMergeNode in="blur1" />
+                    <feMergeNode in="SourceGraphic" />
                 </feMerge>
             </filter>
-            <filter id="glitch-displacement">
+
+            <filter id="hologram-glitch" x="0%" y="0%" width="100%" height="100%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.05 0.95" numOctaves="1" result="noise" />
-                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 100 -20" result="contrast"/>
-                <feDisplacementMap in="SourceGraphic" in2="contrast" scale="30" xChannelSelector="R" yChannelSelector="G"/>
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 150 -15" result="sharpNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="sharpNoise" scale="25" xChannelSelector="R" yChannelSelector="G" result="displacement"/>
+            </filter>
+
+            <filter id="chromatic-aberration">
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"/>
+                <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green"/>
+                <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"/>
+                <feOffset dx="-3" dy="0" in="red" result="redOffset"/>
+                <feOffset dx="3" dy="0" in="blue" result="blueOffset"/>
+                <feMerge>
+                    <feMergeNode in="redOffset"/>
+                    <feMergeNode in="green"/>
+                    <feMergeNode in="blueOffset"/>
+                </feMerge>
             </filter>
         </defs>
     </svg>
 
-    <div id="game-container" data-device-target="ipad-touch" data-orientation="portrait">
+    <div id="game-container">
+        
+        <div class="crt-overlay-hardware"></div>
+        <div class="cyber-scanline-animation"></div>
+
         <canvas id="gameCanvas" width="768" height="1024"></canvas>
 
         <div id="speed-matrix-panel">
-            <div class="panel-header">ENGINE_SPEED</div>
+            <div class="panel-glitch-title" data-text="ENGINE_VELOCITY">ENGINE_VELOCITY</div>
             <div class="speed-options-group">
-                <button class="speed-trigger-btn active" id="speed-low" data-velocity-multiplier="0.65">LOW</button>
-                <button class="speed-trigger-btn" id="speed-med" data-velocity-multiplier="1.00">MEDIUM</button>
-                <button class="speed-trigger-btn" id="speed-high" data-velocity-multiplier="1.55">HIGH</button>
+                <button class="speed-trigger-btn active" id="speed-low" data-speed-mode="LOW">
+                    <span class="btn-indicator"></span>LOW
+                </button>
+                <button class="speed-trigger-btn" id="speed-med" data-speed-mode="MED">
+                    <span class="btn-indicator"></span>MEDIUM
+                </button>
+                <button class="speed-trigger-btn" id="speed-high" data-speed-mode="HIGH">
+                    <span class="btn-indicator"></span>HIGH
+                </button>
             </div>
-            <div class="panel-footer">STATUS: LOCKED</div>
+            <div class="panel-status-registry">CORE_CLOCK: LOCKED</div>
         </div>
 
         <div id="hud" class="hud-hidden">
-            <div class="hud-block-item" id="score-block">
-                <span class="label">SCORE</span>
-                <span class="value" id="score-val">0</span>
+            <div class="hud-metric-card" id="card-score">
+                <div class="metric-tag">DATA_SCORE</div>
+                <div class="metric-value" id="score-val">0</div>
+                <div class="metric-bar"><div class="fill-inner" id="score-bar-fill"></div></div>
             </div>
-            <div class="hud-block-item" id="phase-block">
-                <span class="label">PHASE</span>
-                <span class="value" id="time-display">DAYTIME</span>
+            <div class="hud-metric-card" id="card-phase">
+                <div class="metric-tag">WORLD_PHASE</div>
+                <div class="metric-value" id="time-display">DAYTIME</div>
+                <div class="metric-bar"><div class="fill-inner" id="phase-bar-fill"></div></div>
             </div>
-            <div class="hud-block-item" id="record-block">
-                <span class="label">BEST</span>
-                <span class="value" id="high-val">0</span>
+            <div class="hud-metric-card" id="card-best">
+                <div class="metric-tag">MAX_RECORD</div>
+                <div class="metric-value" id="high-val">0</div>
+                <div class="metric-bar"><div class="fill-inner" id="best-bar-fill"></div></div>
             </div>
-            <div id="active-powerups-runtime-pool"></div>
         </div>
 
         <div id="ui-overlay" class="overlay-visible">
-            <div class="menu-ui-core">
-                <h1 id="dynamic-state-title">START GAME</h1>
-                <button id="start-btn">LAUNCH</button>
+            <div class="menu-structure-wrapper">
+                <div class="glitch-title-container">
+                    <h1 id="dynamic-state-title" data-text="START GAME">START GAME</h1>
+                </div>
+                <div class="button-action-frame">
+                    <button id="start-btn">
+                        <span class="corner-tr"></span>
+                        <span class="corner-bl"></span>
+                        LAUNCH SYSTEM
+                    </button>
+                </div>
             </div>
         </div>
+
     </div>
 
-    <div style="display:none;" id="meta-registry-payload">
-        <div class="node-item" data-id="0">NODE_INITIALIZED</div>
-        <div class="node-item" data-id="1">INPUT_SNAKE_SMOOTH_ENABLED</div>
-        <div class="node-item" data-id="2">AUDIO_CONTEXT_PREPARED</div>
-        <div class="node-item" data-id="3">METALLIC_COIN_GRADIENT_BUFFERS_READY</div>
-        <div class="node-item" data-id="4">RAIN_STORM_POOL_PREALLOCATED</div>
-        <div class="node-item" data-id="5">TOUCH_LEFT_RIGHT_GEOMETRIC_SPLIT_VALID</div>
-        <div class="node-item" data-id="6">GIANT_67_FLAME_SHADERS_COMPILED</div>
-        <div class="node-item" data-id="7">HTML_DOM_TREE_PADDING_COMPLETE</div>
+    <div style="display:none;" id="engine-dom-registry-manifest">
+        <div id="node-0" class="meta-node" data-desc="Canvas Engine Frame Context Pipeline"></div>
+        <div id="node-1" class="meta-node" data-desc="Low Latency Snake Interp Direction Control Active"></div>
+        <div id="node-2" class="meta-node" data-desc="WebAudio Oscillator Synths Network Layer Ready"></div>
+        <div id="node-3" class="meta-node" data-desc="High Contrast Metallic Shading Gradient Buffers Active"></div>
+        <div id="node-4" class="meta-node" data-desc="Multi-Color Seizure Flash Grid Matrix Loaded"></div>
+        <div id="node-5" class="meta-node" data-desc="Dual Touch Left-Right Screen Geometric Boundary Loaded"></div>
+        <div id="node-6" class="meta-node" data-desc="67 Impact Destruction Low Frequency Oscillator Synth Active"></div>
+        <div id="node-7" class="meta-node" data-desc="Speed Level Modifiers Velocity Realtime Ingestion Complete"></div>
+        <div id="node-8" class="meta-node" data-desc="Zero Text UI Overhaul Layout Controller Functional"></div>
+        <div id="node-9" class="meta-node" data-desc="Particle Buffering Dynamic Allocation Stack Active"></div>
+        <div id="node-10" class="meta-node" data-desc="Screen Jitter Displacement Matrix Stabilized"></div>
+        <div id="node-11" class="meta-node" data-desc="Global Timeline Tick Sequencer Initialized"></div>
+        <div id="node-12" class="meta-node" data-desc="Meteor Drop Cascade Speed Physics Model Standardized"></div>
+        <div id="node-13" class="meta-node" data-desc="Premium Shield Upgrade Energy Layer Active"></div>
+        <div id="node-14" class="meta-node" data-desc="Coin Storm Drop Frequency Counter Registered"></div>
+        <div id="node-15" class="meta-node" data-desc="DOM Geometry Allocation Padding Integrity Complete"></div>
+        <div id="node-16" class="meta-node" data-desc="Anti Aliasing Canvas Scaling Ratio Synced"></div>
+        <div id="node-17" class="meta-node" data-desc="High Contrast Overlay Neon Vector Shaders Compiled"></div>
+        <div id="node-18" class="meta-node" data-desc="Zero-Lag Touch Input Intercept Vector Ingested"></div>
+        <div id="node-19" class="meta-node" data-desc="Hardware Vendor Profiler Pipeline Validated"></div>
+        <div id="node-20" class="meta-node" data-desc="Fallback Event Handlers System Pool Declared"></div>
+        <div id="node-21" class="meta-node" data-desc="LocalStorage High Score Ingestion Safe Mode"></div>
+        <div id="node-22" class="meta-node" data-desc="Floating Score Indicators Canvas Vector Pre-rendered"></div>
+        <div id="node-23" class="meta-node" data-desc="Day Twilight Night Time Environment Interp Map Complete"></div>
+        <div id="node-24" class="meta-node" data-desc="Advanced Chromatic Displacement Filter Cache Hooked"></div>
+        <div id="node-25" class="meta-node" data-desc="CRT Overlay Scanline Emulation Frequency Stable"></div>
+        <div id="node-26" class="meta-node" data-desc="High Frequency Sine Audio Buffer Registry Configured"></div>
+        <div id="node-27" class="meta-node" data-desc="Metallic Reflections Physics Model Base Matrix Ready"></div>
+        <div id="node-28" class="meta-node" data-desc="Zero Tolerance Cartoon Graphics Filter Stack Enabled"></div>
+        <div id="node-29" class="meta-node" data-desc="Terminal Destruction Cleanup Function Bindings Finished"></div>
+        <div id="node-30" class="meta-node" data-desc="End Of Document Engine Registry Frame Structure Check"></div>
     </div>
 
 </body>
