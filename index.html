@@ -3,34 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neon Balloon vs 67 - Modern Edition</title>
+    <title>JJ Hot Air Ballon </title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
+        <!-- Main Graphic Canvas -->
         <canvas id="gameCanvas"></canvas>
 
+        <!-- Dynamic UI Overlay -->
         <div id="ui-overlay" class="overlay-visible">
             <h1 id="game-title">NEON BALLOON <span class="vs-text">VS</span> 67</h1>
-            <p id="game-subtitle">Modern Glitch Arcade Edition</p>
+            <p id="game-subtitle">Advanced 3D Coin & Flame Boss Edition</p>
             
             <div id="instructions">
-                <p>➔ Tap/Hold screen to FLY UP, release to FALL DOWN.</p>
-                <p>➔ Collect Coins <span class="highlight-coin">●</span> and Power-ups (Magnet, Shield).</p>
-                <p>➔ Avoid Meteors and the ultimate boss <span class="highlight-67">"67"</span>!</p>
-                <p class="warning-text">⚠️ WARNING: Touching "67" triggers severe glitch convulsions!</p>
+                <p>➔ <b>LEFT HALF SCREEN:</b> Hold to Fly UP & Move LEFT ◀</p>
+                <p>➔ <b>RIGHT HALF SCREEN:</b> Hold to Fly UP & Move RIGHT ▶</p>
+                <p>➔ <b>RELEASE ALL:</b> Fall down via gravity ▼</p>
+                <p>➔ Watch out for 3D metallic coins, Coin Storms, and Day/Night cycles.</p>
+                <p class="warning-text">🔥 WARNING: The Giant Golden Fire "67" will cause severe glitch seizures!</p>
             </div>
 
             <button id="start-btn">LAUNCH GAME</button>
         </div>
 
+        <!-- Real-time HUD -->
         <div id="hud" class="hud-hidden">
             <div class="hud-item">SCORE: <span id="score-val">0</span></div>
+            <div class="hud-item" id="time-display">DAY</div>
             <div class="hud-item">BEST: <span id="high-val">0</span></div>
             <div id="active-powerups"></div>
         </div>
     </div>
 
+    <!-- Core Game Engine -->
     <script src="script.js"></script>
 </body>
 </html>
