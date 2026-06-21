@@ -1,16 +1,21 @@
-/* Custom Cyberpunk Design System Framework - Zero Cartoon Tolerance */
-@keyframes cyberScanlineEffect {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
-}
+/* ==========================================================================
+   CYBER ARCADE HIGH-END CSS ARCHITECTURE
+   ZERO CARTOON INHERITANCE - RADICAL NEON VECTOR STYLING
+   ========================================================================== */
 
-@keyframes rainbowPulseFlash {
-    0% { border-color: #ff0055; box-shadow: 0 0 30px #ff0055; }
-    20% { border-color: #00ffcc; box-shadow: 0 0 30px #00ffcc; }
-    40% { border-color: #9900ff; box-shadow: 0 0 30px #9900ff; }
-    60% { border-color: #ffff00; box-shadow: 0 0 30px #ffff00; }
-    80% { border-color: #ff00ff; box-shadow: 0 0 30px #ff00ff; }
-    100% { border-color: #ff0055; box-shadow: 0 0 30px #ff0055; }
+/* --- CORE RESET & DESIGN TOKENS --- */
+:root {
+    --cyber-black: #020205;
+    --cyber-dark-blue: #050b1a;
+    --cyber-cyan: #00f2fe;
+    --cyber-neon-pink: #ff0055;
+    --cyber-neon-purple: #9900ff;
+    --cyber-gold: #ffd700;
+    --cyber-green: #00ffcc;
+    --cyber-white: #ffffff;
+    --cyber-panel-bg: rgba(3, 4, 12, 0.92);
+    --cyber-border-glow: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --font-cyber: 'Courier New', Courier, monospace;
 }
 
 * {
@@ -19,19 +24,59 @@
     padding: 0;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-text-size-adjust: none;
     touch-action: none;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #010103;
-    font-family: 'Courier New', Courier, monospace;
-    color: #ffffff;
+    background-color: var(--cyber-black);
+    font-family: var(--font-cyber);
+    color: var(--cyber-white);
 }
 
+/* --- KEYFRAME ANIMATION COMPONENT REGISTRY --- */
+@keyframes globalCrtScanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+@keyframes titleGlitchShift {
+    0% { clip-path: inset(40% 0 61% 0); transform: skew(0.3deg); }
+    20% { clip-path: inset(92% 0 1% 0); transform: skew(-0.5deg); }
+    40% { clip-path: inset(15% 0 80% 0); transform: skew(0.8deg); }
+    60% { clip-path: inset(80% 0 5% 0); transform: skew(-0.2deg); }
+    80% { clip-path: inset(3% 0 92% 0); transform: skew(0.4deg); }
+    100% { clip-path: inset(55% 0 32% 0); transform: skew(0deg); }
+}
+
+@keyframes neonBorderPulse {
+    0% { border-color: var(--cyber-cyan); box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); }
+    50% { border-color: var(--cyber-neon-pink); box-shadow: 0 0 25px rgba(255, 0, 85, 0.6); }
+    100% { border-color: var(--cyber-cyan); box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); }
+}
+
+@keyframes buttonGlowFlicker {
+    0%, 100% { opacity: 1; }
+    33% { opacity: 0.85; }
+    66% { opacity: 0.95; }
+    77% { opacity: 0.75; }
+}
+
+@keyframes rainbowBackgroundImpact {
+    0% { border-color: #ff0055; box-shadow: 0 0 40px #ff0055; }
+    20% { border-color: #00ffcc; box-shadow: 0 0 40px #00ffcc; }
+    40% { border-color: #9900ff; box-shadow: 0 0 40px #9900ff; }
+    60% { border-color: #ffff00; box-shadow: 0 0 40px #ffff00; }
+    80% { border-color: #ff00ff; box-shadow: 0 0 40px #ff00ff; }
+    100% { border-color: #ff0055; box-shadow: 0 0 40px #ff0055; }
+}
+
+/* --- MAIN CONTAINER ENGINE LAYOUT --- */
 #game-container {
     position: relative;
     width: 100%;
@@ -39,177 +84,289 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle at center, #08081a 0%, #010105 100%);
+    background: radial-gradient(circle at center, #0a1128 0%, #010206 100%);
+    perspective: 1000px;
 }
 
-#game-container::before {
-    content: " ";
-    display: block;
+/* CRT Emulation Hardware Layers */
+.crt-overlay-hardware {
     position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    z-index: 2;
-    background-size: 100% 4px, 6px 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.85) 100%);
     pointer-events: none;
+    z-index: 15;
 }
 
+.cyber-scanline-animation {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+    background-size: 100% 5px;
+    pointer-events: none;
+    z-index: 14;
+    opacity: 0.8;
+}
+
+/* Core Hardware Accelerated Canvas Frame */
 canvas {
     display: block;
-    background-color: #020206;
-    border: 2px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
+    background-color: #020207;
+    border: 3px solid rgba(0, 242, 254, 0.15);
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.95);
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
-/* Advanced Top Right Speed Controls Selector Block */
+/* --- SPEED MATRIX HARDWARE CONTROLLER PANEL --- */
 #speed-matrix-panel {
     position: absolute;
-    top: 25px;
-    right: 25px;
-    width: 190px;
-    background: rgba(4, 4, 12, 0.85);
-    border: 1px solid rgba(0, 242, 254, 0.25);
-    border-radius: 4px;
-    padding: 8px;
-    z-index: 8;
+    top: 30px;
+    right: 30px;
+    width: 220px;
+    background: var(--cyber-panel-bg);
+    border: 1px solid rgba(0, 242, 254, 0.3);
+    border-radius: 2px;
+    padding: 12px;
+    z-index: 18;
     pointer-events: auto;
+    font-family: var(--font-cyber);
 }
 
-#speed-matrix-panel .panel-header {
-    font-size: 0.75rem;
-    color: #00f2fe;
-    letter-spacing: 2px;
-    margin-bottom: 6px;
-    font-weight: bold;
+.panel-glitch-title {
+    font-size: 0.85rem;
+    color: var(--cyber-cyan);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    font-weight: 900;
     text-align: center;
+    position: relative;
+    text-shadow: 0 0 5px var(--cyber-cyan);
 }
 
 .speed-options-group {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
 .speed-trigger-btn {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #8fa0ba;
-    padding: 6px 0;
-    font-size: 0.8rem;
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #a4b6d4;
+    padding: 10px 14px;
+    font-size: 0.85rem;
     font-weight: bold;
+    letter-spacing: 2px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s var(--cyber-border-glow);
 }
 
-.speed-trigger-btn:active {
-    background: rgba(255, 255, 255, 0.1);
+.speed-trigger-btn:hover {
+    background: rgba(0, 242, 254, 0.05);
+    color: var(--cyber-white);
+    border-color: rgba(0, 242, 254, 0.4);
 }
 
+.speed-trigger-btn .btn-indicator {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+/* Individual Mode Glow Accelerators */
 .speed-trigger-btn.active {
-    background: rgba(0, 242, 254, 0.15);
-    border-color: #00f2fe;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    color: var(--cyber-white);
+    background: rgba(255, 255, 255, 0.05);
 }
 
-#speed-low.active { border-color: #00ffcc; box-shadow: 0 0 10px rgba(0, 255, 204, 0.3); }
-#speed-med.active { border-color: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
-#speed-high.active { border-color: #ff3344; box-shadow: 0 0 10px rgba(255, 51, 68, 0.3); }
+#speed-low.active {
+    border-color: var(--cyber-green);
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+    text-shadow: 0 0 5px var(--cyber-green);
+}
+#speed-low.active .btn-indicator { background: var(--cyber-green); box-shadow: 0 0 8px var(--cyber-green); }
 
-#speed-matrix-panel .panel-footer {
+#speed-med.active {
+    border-color: var(--cyber-gold);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    text-shadow: 0 0 5px var(--cyber-gold);
+}
+#speed-med.active .btn-indicator { background: var(--cyber-gold); box-shadow: 0 0 8px var(--cyber-gold); }
+
+#speed-high.active {
+    border-color: var(--cyber-neon-pink);
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+    text-shadow: 0 0 5px var(--cyber-neon-pink);
+}
+#speed-high.active .btn-indicator { background: var(--cyber-neon-pink); box-shadow: 0 0 8px var(--cyber-neon-pink); }
+
+.panel-status-registry {
     font-size: 0.6rem;
     color: rgba(255, 255, 255, 0.3);
     text-align: center;
-    margin-top: 5px;
+    margin-top: 8px;
+    letter-spacing: 1px;
 }
 
-/* Minimalist HUD Framework */
+/* --- HARDCORE CYBER MODULAR HUD REGISTRY --- */
 #hud {
     position: absolute;
-    top: 25px;
-    left: 25px;
+    top: 30px;
+    left: 30px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     pointer-events: none;
-    z-index: 5;
+    z-index: 18;
 }
 
 .hud-hidden { display: none !important; }
 .hud-visible { display: flex !important; }
 
-.hud-block-item {
-    background: rgba(2, 2, 5, 0.8);
-    border-left: 3px solid #00f2fe;
-    padding: 4px 12px;
+.hud-metric-card {
+    background: var(--cyber-panel-bg);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 4px solid var(--cyber-cyan);
+    width: 180px;
+    padding: 8px 14px;
     display: flex;
     flex-direction: column;
+    gap: 2px;
 }
 
-#score-block { border-left-color: #00f2fe; }
-#phase-block { border-left-color: #ffffff; }
-#record-block { border-left-color: #ffd700; }
+#card-score { border-left-color: var(--cyber-cyan); }
+#card-phase { border-left-color: var(--cyber-white); }
+#card-best { border-left-color: var(--cyber-gold); }
 
-.hud-block-item .label {
+.hud-metric-card .metric-tag {
     font-size: 0.65rem;
     color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.hud-metric-card .metric-value {
+    font-size: 1.4rem;
+    font-weight: 900;
     letter-spacing: 1px;
 }
 
-.hud-block-item .value {
-    font-size: 1.2rem;
-    font-weight: bold;
+#score-val { color: var(--cyber-cyan); text-shadow: 0 0 8px rgba(0, 242, 254, 0.5); }
+#time-display { color: var(--cyber-white); }
+#high-val { color: var(--cyber-gold); text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
+
+.hud-metric-card .metric-bar {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-top: 4px;
+    overflow: hidden;
 }
 
-#score-val { color: #00f2fe; }
-#high-val { color: #ffd700; }
-
-#active-powerups-runtime-pool {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 10px;
+.hud-metric-card .metric-bar .fill-inner {
+    height: 100%;
+    width: 100%;
+    background: currentColor;
 }
 
-/* Absolute Minimalist UI Overlays System */
+/* --- EXTREME MINIMALIST UI OVERLAYS SYSTEM --- */
 #ui-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(2, 2, 4, 0.96);
+    background: rgba(1, 2, 5, 0.97);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    z-index: 25;
+    transition: opacity 0.3s ease;
 }
 
-.overlay-hidden { display: none !important; }
-.overlay-visible { display: flex !important; }
+.overlay-hidden {
+    opacity: 0;
+    pointer-events: none !important;
+}
+.overlay-visible {
+    opacity: 1;
+    pointer-events: auto !important;
+}
 
-.menu-ui-core {
+.menu-structure-wrapper {
     text-align: center;
+    padding: 40px;
+    background: rgba(5, 7, 20, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 #dynamic-state-title {
-    font-size: 3.5rem;
-    font-weight: bold;
-    letter-spacing: 6px;
-    color: #ffffff;
-    margin-bottom: 40px;
+    font-size: 4.2rem;
+    font-weight: 900;
+    letter-spacing: 10px;
+    color: var(--cyber-white);
+    margin-bottom: 50px;
     text-transform: uppercase;
+    position: relative;
+    text-shadow: 3px 0 0 var(--cyber-neon-pink), -3px 0 0 var(--cyber-cyan);
 }
 
+/* Pure Advanced Cyberpunk Square Button Structure */
 #start-btn {
+    position: relative;
     background: transparent;
-    border: 1px solid #ffffff;
-    color: #ffffff;
-    padding: 12px 60px;
-    font-size: 1.1rem;
-    letter-spacing: 4px;
+    border: 1px solid var(--cyber-white);
+    color: var(--cyber-white);
+    padding: 16px 70px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 6px;
     cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s ease;
+    font-family: var(--font-cyber);
+    transition: all 0.2s var(--cyber-border-glow);
+    animation: buttonGlowFlicker 4s infinite;
+}
+
+#start-btn:hover {
+    background: var(--cyber-white);
+    color: var(--cyber-black);
+    box-shadow: 0 0 30px var(--cyber-white);
 }
 
 #start-btn:active {
-    background: #ffffff;
-    color: #000000;
+    transform: scale(0.97);
+    background: rgba(255, 255, 255, 0.85);
+}
+
+/* Corner Element Extensions for Elite UI Feel */
+#start-btn .corner-tr {
+    position: absolute;
+    top: -4px; right: -4px;
+    width: 10px; height: 10px;
+    border-top: 2px solid var(--cyber-cyan);
+    border-right: 2px solid var(--cyber-cyan);
+}
+
+#start-btn .corner-bl {
+    position: absolute;
+    bottom: -4px; left: -4px;
+    width: 10px; height: 10px;
+    border-bottom: 2px solid var(--cyber-neon-pink);
+    border-left: 2px solid var(--cyber-neon-pink);
+}
+
+/* Rainbow Interception Global Shader Hooks */
+body.rainbow-active-flash #game-container {
+    animation: rainbowBackgroundImpact 0.15s infinite linear;
+}
+
+/* --- FOOTER INGESTION TREE STYLING (FORCED EXPANSION) --- */
+.meta-node {
+    padding: 2px;
+    margin: 1px;
+    color: rgba(0,0,0,0.01);
 }
