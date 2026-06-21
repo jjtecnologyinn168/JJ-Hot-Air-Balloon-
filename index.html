@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Balloon vs 67 - Modern Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="ui-overlay" class="overlay-visible">
+            <h1 id="game-title">NEON BALLOON <span class="vs-text">VS</span> 67</h1>
+            <p id="game-subtitle">Modern Glitch Arcade Edition</p>
+            
+            <div id="instructions">
+                <p>➔ Tap/Hold screen to FLY UP, release to FALL DOWN.</p>
+                <p>➔ Collect Coins <span class="highlight-coin">●</span> and Power-ups (Magnet, Shield).</p>
+                <p>➔ Avoid Meteors and the ultimate boss <span class="highlight-67">"67"</span>!</p>
+                <p class="warning-text">⚠️ WARNING: Touching "67" triggers severe glitch convulsions!</p>
+            </div>
+
+            <button id="start-btn">LAUNCH GAME</button>
+        </div>
+
+        <div id="hud" class="hud-hidden">
+            <div class="hud-item">SCORE: <span id="score-val">0</span></div>
+            <div class="hud-item">BEST: <span id="high-val">0</span></div>
+            <div id="active-powerups"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
