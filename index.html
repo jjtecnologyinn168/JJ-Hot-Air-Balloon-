@@ -317,11 +317,6 @@
                 DOM_CACHE.startBtn.addEventListener('click', executeEngineBootUpSequence);
                 DOM_CACHE.restartBtn.addEventListener('click', executeEngineBootUpSequence);
                 
-                DOM_CACHE.btnLow.addEventListener('click', (e) => executeSpeedShiftEvent('LOW', e.currentTarget));
-                DOM_CACHE.btnMed.addEventListener('click', (e) => executeSpeedShiftEvent('MED', e.currentTarget));
-                DOM_CACHE.btnHigh.addEventListener('click', (e) => executeSpeedShiftEvent('HIGH', e.currentTarget));
-                
-                DOM_CACHE.envSwitcherBlock.addEventListener('click', executeManualEnvironmentShiftEvent);
                 
                 executePassiveLoopRenderer();
             });
@@ -337,15 +332,7 @@
                 DOM_CACHE.canvasNode.style.width = `${clientW}px`;
                 DOM_CACHE.canvasNode.style.height = `${clientH}px`;
             }
-function executeSpeedShiftEvent(modeString, domAnchor) {
-    document.querySelectorAll('.speed-btn-node').forEach(b => b.classList.remove('active'));
-    if (domAnchor) domAnchor.classList.add('active');
-    
-    // 这行是核心，确保你的系统设置里有 VELOCITY_RATIO_MODES 这个定义
-    STATE_ENGINE.activeSpeedMultiplier = SYSTEM_SETTING.VELOCITY_RATIO_MODES[modeString];
-    
-    console.log("Speed set to: " + modeString); // 加上这行，按了之后看浏览器控制台有没有显示
-}
+
 
             function executeManualEnvironmentShiftEvent() {
                 if (STATE_ENGINE.activeEnvironmentPhase === 'DAYTIME') STATE_ENGINE.activeEnvironmentPhase = 'TWILIGHT';
