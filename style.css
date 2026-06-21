@@ -1,39 +1,37 @@
-/* ==========================================================================
-   ADVANCED CYBERPUNK ARCHITECTURE STYLESHEET (style.css)
-   Targeting Hardcore Arcade Aesthetics - Zero Cartoon Traces Allowed
-   Line Count Scaling Strategy: Granular Property Mapping & Keyframe Matrices
-   ========================================================================== */
+/* Custom Cyberpunk Design System Framework - Zero Cartoon Tolerance */
+@keyframes cyberScanlineEffect {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
 
-/* 1. Global Document Structural Framework Reset Elements */
+@keyframes rainbowPulseFlash {
+    0% { border-color: #ff0055; box-shadow: 0 0 30px #ff0055; }
+    20% { border-color: #00ffcc; box-shadow: 0 0 30px #00ffcc; }
+    40% { border-color: #9900ff; box-shadow: 0 0 30px #9900ff; }
+    60% { border-color: #ffff00; box-shadow: 0 0 30px #ffff00; }
+    80% { border-color: #ff00ff; box-shadow: 0 0 30px #ff00ff; }
+    100% { border-color: #ff0055; box-shadow: 0 0 30px #ff0055; }
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     user-select: none;
     -webkit-user-select: none;
-    -webkit-touch-callout: none;
     touch-action: none;
     outline: none;
 }
 
-html, body {
+body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
     background-color: #010103;
-    font-family: 'Courier New', Courier, monospace, system-ui;
-    color: #00f2fe;
-    position: relative;
+    font-family: 'Courier New', Courier, monospace;
+    color: #ffffff;
 }
 
-/* Hardware Layer Optimizations for Fluid Performance */
-.hardware-accelerated-layer {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-}
-
-/* 2. Main Viewport Container Positioning Blocks */
 #game-container {
     position: relative;
     width: 100%;
@@ -41,319 +39,177 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle at center, #060814 0%, #010104 100%);
+    background: radial-gradient(circle at center, #08081a 0%, #010105 100%);
+}
+
+#game-container::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
 }
 
 canvas {
     display: block;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    border: 2px solid rgba(0, 242, 254, 0.15);
-    box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 242, 254, 0.05);
-    z-index: 2;
+    background-color: #020206;
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
 }
 
-/* 3. Cyber Ambient Scanline Post-Process Background Arrays */
-.cyber-grid-background {
+/* Advanced Top Right Speed Controls Selector Block */
+#speed-matrix-panel {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: 40px 40px;
-    background-image: linear-gradient(to right, rgba(0, 242, 254, 0.02) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(0, 242, 254, 0.02) 1px, transparent 1px);
-    pointer-events: none;
-    z-index: 1;
-}
-
-.scanline-post-processing-effect {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
-    background-size: 100% 4px, 6px 100%;
-    pointer-events: none;
+    top: 25px;
+    right: 25px;
+    width: 190px;
+    background: rgba(4, 4, 12, 0.85);
+    border: 1px solid rgba(0, 242, 254, 0.25);
+    border-radius: 4px;
+    padding: 8px;
     z-index: 8;
-}
-
-.vignette-shading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, transparent 50%, rgba(1, 1, 4, 0.85) 100%);
-    pointer-events: none;
-    z-index: 7;
-}
-
-/* 4. Advanced Geometric Main Menu Overlays Configuration */
-#ui-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(2, 3, 9, 0.94);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-    padding: 30px;
-    text-align: center;
-    border: 4px solid rgba(0, 242, 254, 0.05);
-    transition: opacity 0.5s cubic-bezier(0.075, 0.82, 0.165, 1), transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
-}
-
-.overlay-state-hidden {
-    opacity: 0;
-    transform: scale(1.08);
-    pointer-events: none;
-}
-
-.overlay-state-visible {
-    opacity: 1;
-    transform: scale(1);
     pointer-events: auto;
 }
 
-/* Cyber Technical Frame Brackets Structural Units */
-.cyber-bracket-top-left, .cyber-bracket-top-right, .cyber-bracket-bottom-left, .cyber-bracket-bottom-right {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border-color: #00f2fe;
-    border-style: solid;
-    pointer-events: none;
-}
-.cyber-bracket-top-left     { top: 20px; left: 20px; border-width: 4px 0 0 4px; }
-.cyber-bracket-top-right    { top: 20px; right: 20px; border-width: 4px 4px 0 0; }
-.cyber-bracket-bottom-left  { bottom: 20px; left: 20px; border-width: 0 0 4px 4px; }
-.cyber-bracket-bottom-right { bottom: 20px; right: 20px; border-width: 0 4px 4px 0; }
-
-/* Glitch Typography Rendering Architecture Block */
-.glitch-title-container {
-    position: relative;
-    margin-bottom: 10px;
-}
-
-#game-title {
-    font-size: 3.4rem;
-    font-weight: 900;
-    letter-spacing: 6px;
-    color: #ffffff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2), 0 0 40px rgba(0, 242, 254, 0.6);
-    position: relative;
-    animation: masterGlitchPulseText 4s infinite;
-}
-
-.neon-vs-accent {
-    color: #ffd700;
-    text-shadow: 0 0 25px #ff8800;
-    font-style: italic;
-}
-
-#game-subtitle {
-    font-size: 0.95rem;
-    font-weight: bold;
-    color: #5f7594;
-    letter-spacing: 3px;
-    margin-bottom: 40px;
-    text-transform: uppercase;
-}
-
-/* 5. Information Panel Control Layout Matrices */
-#instructions-panel {
-    background: rgba(0, 242, 254, 0.02);
-    border: 1px solid rgba(0, 242, 254, 0.12);
-    box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.05);
-    padding: 25px;
-    border-radius: 4px;
-    max-width: 680px;
-    width: 100%;
-    text-align: left;
-    margin-bottom: 45px;
-}
-
-.panel-header {
-    font-size: 1.1rem;
-    font-weight: 900;
-    color: #ffd700;
-    border-bottom: 1px dashed rgba(0, 242, 254, 0.3);
-    padding-bottom: 10px;
-    margin-bottom: 18px;
-    letter-spacing: 2px;
-}
-
-.instruction-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-    font-size: 0.88rem;
-}
-
-.input-badge {
-    background: rgba(0, 242, 254, 0.15);
-    border: 1px solid #00f2fe;
-    color: #ffffff;
-    padding: 4px 10px;
-    font-weight: bold;
-    border-radius: 2px;
-    min-width: 130px;
-    text-align: center;
-    margin-right: 18px;
-    letter-spacing: 1px;
-}
-
-.input-desc {
-    color: #bfa1a1;
-    letter-spacing: 1px;
-}
-
-.critical-alert-box {
-    margin-top: 20px;
-    background: rgba(255, 50, 50, 0.08);
-    border: 1px solid rgba(255, 50, 50, 0.3);
-    padding: 12px;
-    color: #ff5566;
-    font-weight: bold;
-    font-size: 0.85rem;
-    line-height: 1.5;
-    letter-spacing: 1px;
-}
-
-/* 6. Hardware Interactive Initialization Button Controls */
-.button-wrapper {
-    position: relative;
-    margin-bottom: 30px;
-}
-
-#start-btn {
-    background: transparent;
-    border: 2px solid #ffd700;
-    color: #ffd700;
-    padding: 18px 65px;
-    font-size: 1.4rem;
-    font-weight: 900;
-    font-family: 'Courier New', monospace;
-    cursor: pointer;
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
-    transition: all 0.15s ease-in-out;
-    letter-spacing: 3px;
-    position: relative;
-    text-transform: uppercase;
-}
-
-#start-btn:hover {
-    background: #ffd700;
-    color: #000000;
-    box-shadow: 0 0 45px rgba(255, 215, 0, 0.5);
-}
-
-#start-btn:active {
-    transform: scale(0.95);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-}
-
-.system-footer-status {
+#speed-matrix-panel .panel-header {
     font-size: 0.75rem;
-    color: #435266;
-    letter-spacing: 1px;
+    color: #00f2fe;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    text-align: center;
 }
 
-/* 7. Real-time Multi-Channel Performance HUD System */
+.speed-options-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.speed-trigger-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #8fa0ba;
+    padding: 6px 0;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.speed-trigger-btn:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.speed-trigger-btn.active {
+    background: rgba(0, 242, 254, 0.15);
+    border-color: #00f2fe;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+}
+
+#speed-low.active { border-color: #00ffcc; box-shadow: 0 0 10px rgba(0, 255, 204, 0.3); }
+#speed-med.active { border-color: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+#speed-high.active { border-color: #ff3344; box-shadow: 0 0 10px rgba(255, 51, 68, 0.3); }
+
+#speed-matrix-panel .panel-footer {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* Minimalist HUD Framework */
 #hud {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 90px;
-    padding: 15px 40px;
+    top: 25px;
+    left: 25px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 8px;
     pointer-events: none;
     z-index: 5;
 }
 
-.hud-state-hidden { display: none !important; }
-.hud-state-visible { display: flex !important; }
+.hud-hidden { display: none !important; }
+.hud-visible { display: flex !important; }
 
-.hud-data-block {
-    background: rgba(2, 3, 10, 0.85);
-    border: 1px solid rgba(0, 242, 254, 0.15);
-    padding: 8px 20px;
-    border-radius: 2px;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
-
-.hud-label {
-    font-size: 0.7rem;
-    color: #556c8a;
-    letter-spacing: 2px;
-    margin-bottom: 3px;
-}
-
-.hud-value {
-    font-size: 1.4rem;
-    font-weight: 900;
-    letter-spacing: 1px;
-}
-
-#score-val { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
-#high-val { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-#time-display { color: #ffffff; letter-spacing: 2px; }
-
-/* Active Buffers Visual Track System Layouts */
-#active-powerups-pool {
-    position: absolute;
-    top: 95px;
-    right: 40px;
+.hud-block-item {
+    background: rgba(2, 2, 5, 0.8);
+    border-left: 3px solid #00f2fe;
+    padding: 4px 12px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
 
-.buffer-badge-node {
-    padding: 6px 14px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #ffffff;
+#score-block { border-left-color: #00f2fe; }
+#phase-block { border-left-color: #ffffff; }
+#record-block { border-left-color: #ffd700; }
+
+.hud-block-item .label {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
     letter-spacing: 1px;
-    border-left: 4px solid #fff;
-    background: rgba(5, 5, 15, 0.9);
-    text-align: right;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* 8. Full Frame Screen Flash Overlay Elements */
-#screen-flash-shifter {
+.hud-block-item .value {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#score-val { color: #00f2fe; }
+#high-val { color: #ffd700; }
+
+#active-powerups-runtime-pool {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
+}
+
+/* Absolute Minimalist UI Overlays System */
+#ui-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    pointer-events: none;
-    z-index: 9;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(2, 2, 4, 0.96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
 }
 
-/* 9. High Precision Core Keyframe Animations */
-@keyframes masterGlitchPulseText {
-    0% { text-shadow: 0 0 20px rgba(0, 242, 254, 0.6); transform: skew(0deg); }
-    2% { text-shadow: 3px -2px #ff0055, -3px 2px #00ffcc; transform: skew(-3deg); }
-    4% { text-shadow: -2px 3px #ff0055, 2px -3px #00ffcc; transform: skew(2deg); }
-    6% { text-shadow: 0 0 20px rgba(0, 242, 254, 0.6); transform: skew(0deg); }
-    100% { text-shadow: 0 0 20px rgba(0, 242, 254, 0.6); transform: skew(0deg); }
+.overlay-hidden { display: none !important; }
+.overlay-visible { display: flex !important; }
+
+.menu-ui-core {
+    text-align: center;
 }
 
-/* ==========================================================================
-   END OF COMPLEX STYLESHEET REGISTRY SPECIFICATION MODULE
-   ========================================================================== */
+#dynamic-state-title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    letter-spacing: 6px;
+    color: #ffffff;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+}
+
+#start-btn {
+    background: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    padding: 12px 60px;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+#start-btn:active {
+    background: #ffffff;
+    color: #000000;
+}
