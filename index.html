@@ -6,16 +6,16 @@
     <title> JJ Hot Air Balloon </title>
     <style>
         /* ==========================================================================
-           INDUSTRIAL-GRADE HIGH-END ARCADE SHADER SHEET
+           ULTRA-HIGH DEFINITION GRAPHICS SHADER COMPONENT
            ========================================================================== */
         :root {
-            --cyber-bg: #010103;
+            --bg-base: #010206;
             --neon-cyan: #00f2fe;
             --neon-magenta: #ff00ff;
             --neon-gold: #ffd700;
-            --neon-lava: #ff3300;
-            --text-white: #ffffff;
-            --font-engine: 'Consolas', 'Courier New', monospace;
+            --neon-bomb: #ff2200;
+            --pure-white: #ffffff;
+            --font-stack: 'Consolas', 'Courier New', monospace;
         }
 
         * {
@@ -32,12 +32,12 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: var(--cyber-bg);
-            font-family: var(--font-engine);
-            color: var(--text-white);
+            background-color: var(--bg-base);
+            font-family: var(--font-stack);
+            color: var(--pure-white);
         }
 
-        #viewport-wrapper {
+        #engine-viewport-container {
             position: relative;
             width: 100%;
             height: 100%;
@@ -47,25 +47,16 @@
             background: #000000;
         }
 
+        /* REMOVED ALL THE OLD CRT TV BLACK SCANLINES - PURE HIGH-RES RETINA OUTPUT */
         canvas {
             display: block;
-            background-color: #010104;
-            border: 2px solid rgba(0, 242, 254, 0.25);
-            box-shadow: 0 0 50px rgba(0, 242, 254, 0.15);
-        }
-
-        /* Scanline CRT Screen Shader Effect */
-        .crt-scanlines {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 10;
+            background-color: #010103;
+            border: 2px solid rgba(0, 242, 254, 0.4);
+            box-shadow: 0 0 60px rgba(0, 242, 254, 0.25);
         }
 
         /* Professional Heads-Up Display */
-        #hud-container {
+        #hud-master-panel {
             position: absolute;
             top: 24px;
             left: 24px;
@@ -77,144 +68,133 @@
             pointer-events: none;
         }
 
-        .hud-group {
+        .hud-cluster {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .hud-panel {
-            background: rgba(2, 3, 10, 0.85);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            border-left: 4px solid var(--neon-cyan);
-            padding: 8px 16px;
-            min-width: 150px;
+        .hud-card {
+            background: rgba(1, 2, 6, 0.9);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            border-left: 5px solid var(--neon-cyan);
+            padding: 10px 20px;
+            min-width: 160px;
         }
 
-        .hud-label {
+        .hud-title {
             font-size: 0.7rem;
             color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
         }
 
-        .hud-data {
-            font-size: 1.4rem;
+        .hud-value {
+            font-size: 1.5rem;
             font-weight: 900;
             color: var(--neon-cyan);
-            text-shadow: 0 0 8px var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
         }
 
-        /* Speed Control Matrix Interrupters Overlay */
-        .speed-controller {
+        .speed-dock {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             pointer-events: auto;
         }
 
-        .speed-node {
-            background: rgba(5, 8, 24, 0.8);
-            border: 1px solid rgba(0, 242, 254, 0.3);
+        .speed-trigger {
+            background: rgba(4, 8, 28, 0.85);
+            border: 1px solid rgba(0, 242, 254, 0.4);
             color: var(--neon-cyan);
-            padding: 4px 10px;
-            font-size: 0.75rem;
+            padding: 6px 14px;
+            font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
-            font-family: var(--font-engine);
-            transition: all 0.15s ease;
+            font-family: var(--font-stack);
+            transition: all 0.2s ease;
         }
 
-        .speed-node.active {
+        .speed-trigger.active {
             background: var(--neon-cyan);
-            color: #000;
-            box-shadow: 0 0 10px var(--neon-cyan);
+            color: #000000;
+            box-shadow: 0 0 15px var(--neon-cyan);
         }
 
-        /* Main Entry Mask Overlay Screen */
-        #menu-mask {
+        /* Main Single Interactive Mask Overlay */
+        #menu-gate-mask {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(1, 1, 3, 0.96);
+            background: rgba(1, 2, 4, 0.97);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 20;
         }
 
-        .center-box {
-            text-align: center;
-        }
-
         #start-btn {
             background: transparent;
             border: 2px solid var(--neon-cyan);
             color: var(--neon-cyan);
-            padding: 20px 64px;
-            font-size: 1.5rem;
+            padding: 22px 70px;
+            font-size: 1.6rem;
             font-weight: 900;
-            letter-spacing: 6px;
-            font-family: var(--font-engine);
+            letter-spacing: 8px;
+            font-family: var(--font-stack);
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
-            transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+            transition: all 0.2s ease;
         }
 
         #start-btn:hover {
             background: var(--neon-cyan);
             color: #000000;
-            box-shadow: 0 0 40px var(--neon-cyan);
+            box-shadow: 0 0 50px var(--neon-cyan);
         }
 
-        #start-btn:active {
-            transform: scale(0.96);
+        /* Seizure Screen Twitch Shader Animation Matrix */
+        body.glitch-twitch-active #engine-viewport-container {
+            animation: hardwareExtremeTwitch 0.05s infinite alternate linear;
         }
 
-        /* Seizure Screen Impact Flash Matrix Modifiers */
-        body.rainbow-active-flash #viewport-wrapper {
-            animation: hardwareFlashMatrix 0.08s infinite steps(2);
-        }
-
-        @keyframes hardwareFlashMatrix {
-            0% { background-color: rgba(255, 0, 85, 0.6); }
-            100% { background-color: rgba(0, 255, 204, 0.6); }
+        @keyframes hardwareExtremeTwitch {
+            0% { transform: translate(4px, -3px) skewX(2deg); background-color: #ff0055; }
+            50% { transform: translate(-3px, 4px) skewX(-2deg); background-color: #00ffaa; }
+            100% { transform: translate(2px, 2px) skewX(0deg); background-color: #9900ff; }
         }
     </style>
 </head>
 <body>
 
-    <div id="viewport-wrapper">
-        <div class="crt-scanlines"></div>
+    <div id="engine-viewport-container">
         
-        <div id="hud-container">
-            <div class="hud-group">
-                <div class="hud-panel">
-                    <div class="hud-label">CORE SCORE</div>
-                    <div class="hud-data" id="score-readout">000000</div>
+        <div id="hud-master-panel">
+            <div class="hud-cluster">
+                <div class="hud-card">
+                    <div class="hud-title">SCORE MATRIX</div>
+                    <div class="hud-value" id="live-score-node">000000</div>
                 </div>
-                <div class="hud-panel" style="border-left-color: var(--neon-gold)">
-                    <div class="hud-label">HIGH SCORE</div>
-                    <div class="hud-data" id="high-readout" style="color: var(--neon-gold); text-shadow: 0 0 8px var(--neon-gold);">000000</div>
+                <div class="hud-card" style="border-left-color: var(--neon-gold)">
+                    <div class="hud-title">HI-SCORE RECORD</div>
+                    <div class="hud-value" id="live-high-node" style="color: var(--neon-gold); text-shadow: 0 0 10px var(--neon-gold);">000000</div>
                 </div>
             </div>
 
-            <div class="hud-group" style="align-items: flex-end;">
-                <div class="hud-panel" style="border-left-color: var(--neon-magenta)">
-                    <div class="hud-label">ENVIRONMENT MATRIX</div>
-                    <div class="hud-data" id="phase-readout" style="color: var(--neon-magenta); text-shadow: 0 0 8px var(--neon-magenta); font-size: 1.1rem;">DAYTIME</div>
+            <div class="hud-cluster" style="align-items: flex-end;">
+                <div class="hud-card" style="border-left-color: var(--neon-magenta)">
+                    <div class="hud-title">CHRONO PHASE</div>
+                    <div class="hud-value" id="live-phase-node" style="color: var(--neon-magenta); text-shadow: 0 0 10px var(--neon-magenta); font-size: 1.2rem;">DAYTIME</div>
                 </div>
-                <div class="speed-controller">
-                    <button class="speed-node" id="v-low">LOW</button>
-                    <button class="speed-node active" id="v-med">MED</button>
-                    <button class="speed-node" id="v-high">HIGH</button>
+                <div class="speed-dock">
+                    <button class="speed-trigger" id="rate-low">LOW</button>
+                    <button class="speed-trigger active" id="rate-med">MED</button>
+                    <button class="speed-trigger" id="rate-high">HIGH</button>
                 </div>
             </div>
         </div>
 
-        <canvas id="arcadeViewport" width="768" height="1024"></canvas>
+        <canvas id="mainGameCanvas" width="768" height="1024"></canvas>
 
-        <div id="menu-mask">
-            <div class="center-box">
-                <button id="start-btn">START GAME</button>
-            </div>
+        <div id="menu-gate-mask">
+            <button id="start-btn">START GAME</button>
         </div>
     </div>
 
@@ -222,856 +202,656 @@
         (function () {
             'use strict';
 
-            // Global Architecture Matrix Parameters
-            const SYSTEM_CONFIG = {
-                RENDER_WIDTH: 768,
-                RENDER_HEIGHT: 1024,
-                TARGET_FPS: 60,
+            const SYSTEM_SETTING = {
+                CANVAS_W: 768,
+                CANVAS_H: 1024,
+                SNAKE_LERP_X: 0.14, // Fluid high-sensitivity snake drag coefficient
+                SNAKE_LERP_Y: 0.10,
+                MAX_VELOCITY: 22.0,
+                SCROLL_SPEED_BASE: 6.0,
+                ENVIRONMENT_DURATION: 900,
                 
-                // Physics Friction and Inertia Limits (Snake Physics)
-                SNAKE_LERP_ALPHA_X: 0.12, // Snake smooth fluid lag-free blend coefficients
-                SNAKE_LERP_ALPHA_Y: 0.09,
-                MAX_VELOCITY_CAP: 18.0,
-                GLOBAL_SCROLL_BASE: 5.8,
-                ENVIRONMENT_CYCLE_FRAMES: 800,
-                
-                VELOCITY_MULTIPLIER_MAP: { LOW: 0.60, MED: 1.00, HIGH: 1.65 },
-                
-                ALLOCATION_CAPS: { COINS: 35, METEORS: 20, BOSS67: 4, PARTICLES: 350 }
+                VELOCITY_MODES: { LOW: 0.65, MED: 1.00, HIGH: 1.70 },
+                LIMITS: { ITEMS: 40, BOMBS: 12, METEORS: 15, CHROMES: 3, SPARKS: 400 }
             };
 
-            // Global Shared Hardware State Register
-            const ENGINE_STATE = {
+            const STATE_CORE = {
                 ctx: null,
-                isRunning: false,
-                isGameOver: false,
-                globalFrameCount: 0,
+                running: false,
+                over: false,
+                ticks: 0,
+                score: 0,
+                highScore: parseInt(localStorage.getItem('cyber_v6_high') || '0'),
                 
-                currentScore: 0,
-                highScore: parseInt(localStorage.getItem('cyber_v5_high') || '0'),
+                speedMultiplier: 1.00,
+                envPhase: "DAYTIME", // DAYTIME -> TWILIGHT -> NIGHTFALL
+                phaseCounter: 0,
                 
-                activeVelocityMultiplier: 1.00,
-                activeEnvironmentPhase: "DAYTIME", // DAYTIME -> TWILIGHT -> NIGHTFALL
-                phaseTimelineProgress: 0,
+                // Object Pool Array Structs
+                balloon: null,
+                coins: [],
+                bombs: [],
+                meteors: [],
+                chromes67: [],
+                rainbowBombs: [],
+                particles: [],
+                floats: [],
                 
-                // Entities Storage Matrix Pools
-                heroBalloonInstance: null,
-                coinsPool: [],
-                meteorsPool: [],
-                boss67Pool: [],
-                particlesPool: [],
-                textIndicatorsPool: [],
-                starfieldBackgroundPool: [],
+                // Pure Vector Swipe Tracking Registers
+                swipe: { startX: 0, startY: 0, deltaX: 0, deltaY: 0, active: false },
                 
-                // Advanced Vector Swipe Hardware Captures
-                touchControlVector: {
-                    startX: 0, startY: 0,
-                    currentX: 0, currentY: 0,
-                    deltaX: 0, deltaY: 0,
-                    isTracking: false
-                },
-                
-                // Seizure Rainbow Modifiers Flash Parameters
-                isRainbowFlashActive: false,
-                rainbowFlashRemainingTicks: 0,
-                
-                // Sound System Context Pointer
-                audioContextHardware: null
+                twitchFramesRemaining: 0,
+                audioCtx: null
             };
 
-            // DOM Interface Pointers Cache
-            const DOM_INTERFACE = {
-                mask: document.getElementById('menu-mask'),
-                startBtn: document.getElementById('start-btn'),
-                hud: document.getElementById('hud-container'),
-                score: document.getElementById('score-readout'),
-                high: document.getElementById('high-readout'),
-                phase: document.getElementById('phase-readout'),
-                canvas: document.getElementById('arcadeViewport'),
-                vLow: document.getElementById('v-low'),
-                vMed: document.getElementById('v-med'),
-                vHigh: document.getElementById('v-high')
+            const UI_DOM = {
+                mask: document.getElementById('menu-gate-mask'),
+                btn: document.getElementById('start-btn'),
+                hud: document.getElementById('hud-master-panel'),
+                score: document.getElementById('live-score-node'),
+                high: document.getElementById('live-high-node'),
+                phase: document.getElementById('live-phase-node'),
+                canvas: document.getElementById('mainGameCanvas'),
+                rLow: document.getElementById('rate-low'),
+                rMed: document.getElementById('rate-med'),
+                rHigh: document.getElementById('rate-high')
             };
 
-            // ==========================================================================
-            // SYSTEM BOOTSTRAP INITIALIZATION PROCEDURES
-            // ==========================================================================
+            // Bootstrap Setup Links
             window.addEventListener('DOMContentLoaded', () => {
-                ENGINE_STATE.ctx = DOM_INTERFACE.canvas.getContext('2d');
-                DOM_INTERFACE.high.textContent = formatScoreString(ENGINE_STATE.highScore);
+                STATE_CORE.ctx = UI_DOM.canvas.getContext('2d');
+                UI_DOM.high.textContent = formatScore(STATE_CORE.highScore);
                 
-                executeViewportResolutionScaling();
-                generateCosmosBackgroundStarfield();
+                resizeEngineViewport();
+                UI_DOM.btn.addEventListener('click', bootUpPipelineEngine);
+                window.addEventListener('resize', resizeEngineViewport);
                 
-                // Main Entrance Action Listener Rule
-                DOM_INTERFACE.startBtn.addEventListener('click', processHardwareEngineStartSequence);
-                window.addEventListener('resize', executeViewportResolutionScaling);
+                UI_DOM.rLow.addEventListener('click', (e) => adjustSpeedGate('LOW', e.currentTarget));
+                UI_DOM.rMed.addEventListener('click', (e) => adjustSpeedGate('MED', e.currentTarget));
+                UI_DOM.rHigh.addEventListener('click', (e) => adjustSpeedGate('HIGH', e.currentTarget));
                 
-                // Bind Speed Selector Matrix Nodes Buttons
-                DOM_INTERFACE.vLow.addEventListener('click', (e) => switchActiveSpeedSetting('LOW', e.currentTarget));
-                DOM_INTERFACE.vMed.addEventListener('click', (e) => switchActiveSpeedSetting('MED', e.currentTarget));
-                DOM_INTERFACE.vHigh.addEventListener('click', (e) => switchActiveSpeedSetting('HIGH', e.currentTarget));
-                
-                executePrebootRenderPipe();
+                executePassiveRenderClear();
             });
 
-            function executeViewportResolutionScaling() {
-                const aspectTargetRatio = SYSTEM_CONFIG.RENDER_WIDTH / SYSTEM_CONFIG.RENDER_HEIGHT;
-                let currentWidth = window.innerWidth;
-                let currentHeight = window.innerHeight;
-
-                if (currentWidth / currentHeight > aspectTargetRatio) {
-                    currentWidth = currentHeight * aspectTargetRatio;
-                } else {
-                    currentHeight = currentWidth * aspectTargetRatio;
-                }
-
-                DOM_INTERFACE.canvas.style.width = `${currentWidth}px`;
-                DOM_INTERFACE.canvas.style.height = `${currentHeight}px`;
+            function resizeEngineViewport() {
+                const targetRatio = SYSTEM_SETTING.CANVAS_W / SYSTEM_SETTING.CANVAS_H;
+                let w = window.innerWidth, h = window.innerHeight;
+                if (w / h > targetRatio) w = h * targetRatio; else h = w / targetRatio;
+                UI_DOM.canvas.style.width = `${w}px`; UI_DOM.canvas.style.height = `${h}px`;
             }
 
-            function switchActiveSpeedSetting(mode, targetDom) {
-                document.querySelectorAll('.speed-node').forEach(n => n.classList.remove('active'));
-                if (targetDom) targetDom.classList.add('active');
-                ENGINE_STATE.activeVelocityMultiplier = SYSTEM_CONFIG.VELOCITY_MULTIPLIER_MAP[mode];
-                dispatchSynthesizedAudioBeep('click');
+            function adjustSpeedGate(mode, domNode) {
+                document.querySelectorAll('.speed-trigger').forEach(n => n.classList.remove('active'));
+                if (domNode) domNode.classList.add('active');
+                STATE_CORE.speedMultiplier = SYSTEM_SETTING.VELOCITY_MODES[mode];
+                triggerAudioBeep('click');
             }
 
-            function formatScoreString(number) {
-                return String(number).padStart(6, '0');
+            function formatScore(n) { return String(n).padStart(6, '0'); }
+
+            function unlockAudioHardware() {
+                if (!STATE_CORE.audioCtx) STATE_CORE.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (STATE_CORE.audioCtx.state === 'suspended') STATE_CORE.audioCtx.resume();
             }
 
-            // ==========================================================================
-            // REALTIME SYNTHESIZED LOW-LATENCY AUDIO INFRASTRUCTURE
-            // ==========================================================================
-            function unlockAudioHardwareSystem() {
-                if (!ENGINE_STATE.audioContextHardware) {
-                    ENGINE_STATE.audioContextHardware = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (ENGINE_STATE.audioContextHardware && ENGINE_STATE.audioContextHardware.state === 'suspended') {
-                    ENGINE_STATE.audioContextHardware.resume();
-                }
-            }
-
-            function dispatchSynthesizedAudioBeep(profileName) {
-                if (!ENGINE_STATE.audioContextHardware) return;
-                const ctx = ENGINE_STATE.audioContextHardware;
-                const now = ctx.currentTime;
+            function triggerAudioBeep(profile) {
+                if (!STATE_CORE.audioCtx) return;
+                const c = STATE_CORE.audioCtx; const now = c.currentTime;
+                const osc = c.createOscillator(); const gain = c.createGain();
                 
-                try {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    
-                    switch (profileName) {
-                        case 'coin_grab':
-                            osc.type = 'sine';
-                            osc.frequency.setValueAtTime(587.33, now); // D5
-                            osc.frequency.setValueAtTime(1174.66, now + 0.06); // D6 Specular Note
-                            gain.gain.setValueAtTime(0.12, now);
-                            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-                            break;
-                        case 'boss_crash_67':
-                            osc.type = 'sawtooth';
-                            osc.frequency.setValueAtTime(140, now);
-                            osc.frequency.linearRampToValueAtTime(30, now + 0.5);
-                            gain.gain.setValueAtTime(0.35, now);
-                            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
-                            break;
-                        case 'swipe_vector':
-                            osc.type = 'triangle';
-                            osc.frequency.setValueAtTime(293.66, now);
-                            osc.frequency.exponentialRampToValueAtTime(440.00, now + 0.08);
-                            gain.gain.setValueAtTime(0.04, now);
-                            gain.gain.linearRampToValueAtTime(0.001, now + 0.08);
-                            break;
-                        case 'click':
-                            osc.type = 'sine';
-                            osc.frequency.setValueAtTime(659.25, now);
-                            gain.gain.setValueAtTime(0.05, now);
-                            gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
-                            break;
-                        case 'death_terminate':
-                            osc.type = 'sawtooth';
-                            osc.frequency.setValueAtTime(220, now);
-                            osc.frequency.linearRampToValueAtTime(10, now + 0.75);
-                            gain.gain.setValueAtTime(0.4, now);
-                            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-                            break;
+                if (profile === 'coin') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(659.25, now); osc.frequency.setValueAtTime(1318.51, now + 0.05);
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                } else if (profile === 'twitch') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now); osc.frequency.linearRampToValueAtTime(40, now + 0.6);
+                    gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+                } else if (profile === 'click') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now);
+                    gain.gain.setValueAtTime(0.04, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.05);
+                } else { // blast
+                    osc.type = 'square'; osc.frequency.setValueAtTime(100, now); osc.frequency.linearRampToValueAtTime(10, now + 0.8);
+                    gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                }
+                osc.connect(gain); gain.connect(c.destination); osc.start(now); osc.stop(now + 0.85);
+            }
+
+            // ==========================================================================
+            // TRUE HIGH-GLOSS SPECULAR MULTILAYER BALOON ACTOR ENGINE WITH FLAME PROPULSION
+            // ==========================================================================
+            class UltraRealisticHotAirBalloon {
+                constructor() {
+                    this.x = SYSTEM_SETTING.CANVAS_W / 2;
+                    this.y = SYSTEM_SETTING.CANVAS_H * 0.75;
+                    this.r = 28;
+                    this.vx = 0; this.vy = 0;
+                }
+
+                update() {
+                    // Fluent drag position calculation matrices
+                    let tx = STATE_CORE.swipe.active ? STATE_CORE.swipe.deltaX * 0.30 : 0;
+                    let ty = STATE_CORE.swipe.active ? STATE_CORE.swipe.deltaY * 0.30 : 0;
+
+                    if (tx > SYSTEM_SETTING.MAX_VELOCITY) tx = SYSTEM_SETTING.MAX_VELOCITY;
+                    if (tx < -SYSTEM_SETTING.MAX_VELOCITY) tx = -SYSTEM_SETTING.MAX_VELOCITY;
+                    if (ty > SYSTEM_SETTING.MAX_VELOCITY) ty = SYSTEM_SETTING.MAX_VELOCITY;
+                    if (ty < -SYSTEM_SETTING.MAX_VELOCITY) ty = -SYSTEM_SETTING.MAX_VELOCITY;
+
+                    // Interpolate Fluid Motion Vector Calculations (True Snake Response)
+                    this.vx += (tx - this.vx) * SYSTEM_SETTING.SNAKE_LERP_X;
+                    this.vy += (ty - this.vy) * SYSTEM_SETTING.SNAKE_LERP_Y;
+                    this.x += this.vx * STATE_CORE.speedMultiplier;
+                    this.y += this.vy * STATE_CORE.speedMultiplier;
+
+                    // Enforce Hardware Viewport Lock Barriers
+                    if (this.x - this.r < 0) { this.x = this.r; this.vx = 0; }
+                    if (this.x + this.r > SYSTEM_SETTING.CANVAS_W) { this.x = SYSTEM_SETTING.CANVAS_W - this.r; this.vx = 0; }
+                    if (this.y - this.r < 0) { this.y = this.r; this.vy = 0; }
+                    if (this.y + this.r * 2.5 > SYSTEM_SETTING.CANVAS_H) { this.y = SYSTEM_SETTING.CANVAS_H - this.r * 2.5; this.vy = 0; }
+
+                    // CONTINUOUS FIRE THRUSTER JET PROPULSION EMITTERS (喷射器)
+                    if (STATE_CORE.ticks % 2 === 0) {
+                        const thrustX = this.x;
+                        const thrustY = this.y + this.r + 12;
+                        // Fire orange/cyan split streams particles down
+                        spawnVectorSpark(thrustX + (Math.random() - 0.5) * 6, thrustY, 4, '#ff5500', (Math.random() - 0.5) * 2, 7.0 + Math.random() * 4, 18);
+                        spawnVectorSpark(thrustX, thrustY, 2.5, '#00ffff', (Math.random() - 0.5) * 1, 9.0 + Math.random() * 5, 12);
                     }
+                }
+
+                draw(ctx) {
+                    ctx.save();
                     
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(now); osc.stop(now + 0.85);
-                } catch (e) {
-                    // Fail-safe protection matrix
+                    // Rainbow active color shifting modifier overrides
+                    let primaryTheme = '#00f2fe';
+                    if (STATE_CORE.twitchFramesRemaining > 0) {
+                        primaryTheme = `hsl(${(STATE_CORE.ticks * 15) % 360}, 100%, 65%)`;
+                    }
+
+                    // 1. High Gloss Specular Sphere Shaded Radial Matrix
+                    ctx.shadowBlur = 30; ctx.shadowColor = primaryTheme;
+                    const glossGrad = ctx.createRadialGradient(this.x - 9, this.y - 9, 3, this.x, this.y, this.r);
+                    glossGrad.addColorStop(0.0, '#ffffff');
+                    glossGrad.addColorStop(0.2, primaryTheme);
+                    glossGrad.addColorStop(0.7, '#040b24');
+                    glossGrad.addColorStop(1.0, '#000000');
+                    ctx.fillStyle = glossGrad;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill();
+
+                    // 2. Structural Layer Geometric Latitude/Longitude Mesh Lines (拒绝卡通)
+                    ctx.shadowBlur = 0; ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)'; ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.ellipse(this.x, this.y, this.r * 0.5, this.r, 0, 0, Math.PI * 2);
+                    ctx.ellipse(this.x, this.y, this.r, this.r * 0.4, 0, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    // 3. Steel Rigging Tension Carrier Cables
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)'; ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x - 12, this.y + this.r - 2); ctx.lineTo(this.x - 8, this.y + this.r + 20);
+                    ctx.moveTo(this.x + 12, this.y + this.r - 2); ctx.lineTo(this.x + 8, this.y + this.r + 20);
+                    ctx.stroke();
+
+                    // 4. Burner Combustion Engine Vent Core (喷射器本体)
+                    ctx.fillStyle = '#111827'; ctx.strokeStyle = primaryTheme; ctx.lineWidth = 2;
+                    ctx.fillRect(this.x - 5, this.y + this.r + 4, 10, 8);
+                    ctx.strokeRect(this.x - 5, this.y + this.r + 4, 10, 8);
+
+                    // 5. Cargo Metallic Woven Fuel Basket Capsule Container
+                    ctx.fillStyle = '#080d22'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5;
+                    ctx.fillRect(this.x - 10, this.y + this.r + 20, 20, 12);
+                    ctx.strokeRect(this.x - 10, this.y + this.r + 20, 20, 12);
+
+                    ctx.restore();
                 }
             }
 
             // ==========================================================================
-            // ACTOR CLASS DEFINITIONS (HIGH REFLECTIVE GRADIENTS)
+            // REAL CLASS DRIVEN BLACK IRON 💣 BOMB WITH LIVE SPARK FUSE PIPELINES
             // ==========================================================================
-            class MetallicCyberBalloonHero {
+            class RealisticCastIronBomb {
                 constructor() {
-                    this.x = SYSTEM_CONFIG.RENDER_WIDTH / 2;
-                    this.y = SYSTEM_CONFIG.RENDER_HEIGHT * 0.75;
-                    this.boundingRadius = 26;
-                    
-                    this.velocityX = 0;
-                    this.velocityY = 0;
-                    this.targetVelocityX = 0;
-                    this.targetVelocityY = 0;
+                    this.r = 22;
+                    this.x = Math.random() * (SYSTEM_SETTING.CANVAS_W - 80) + 40;
+                    this.y = -this.r - 30;
                 }
+                update() {
+                    this.y += SYSTEM_SETTING.SCROLL_SPEED_BASE * STATE_CORE.speedMultiplier;
+                    
+                    // Emit sparks from the fuse tip continually
+                    if (STATE_CORE.ticks % 2 === 0) {
+                        const fuseTipX = this.x + 14; const fuseTipY = this.y - 24;
+                        spawnVectorSpark(fuseTipX, fuseTipY, 3, '#ffd700', (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4 - 2, 15);
+                        spawnVectorSpark(fuseTipX, fuseTipY, 2, '#ff3300', (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, 10);
+                    }
+                }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.shadowBlur = 15; ctx.shadowColor = '#000000';
+                    
+                    // 1. Draw Vector Fuse Cord Curve
+                    ctx.strokeStyle = '#d97706'; ctx.lineWidth = 2.5; ctx.beginPath();
+                    ctx.moveTo(this.x, this.y - this.r); ctx.quadraticCurveTo(this.x + 8, this.y - this.r - 12, this.x + 14, this.y - 24);
+                    ctx.stroke();
 
-                updateCalculations() {
-                    // Ingest low-latency continuous touch vector mappings
-                    if (ENGINE_STATE.touchControlVector.isTracking) {
-                        // Dynamic calculation scale mappings (Snake response fluidity multiplier)
-                        this.targetVelocityX = ENGINE_STATE.touchControlVector.deltaX * 0.28;
-                        this.targetVelocityY = ENGINE_STATE.touchControlVector.deltaY * 0.28;
+                    // 2. Metallic Blast Shell Gradient Spherical Ring
+                    const ironGrad = ctx.createRadialGradient(this.x - 6, this.y - 6, 2, this.x, this.y, this.r);
+                    ironGrad.addColorStop(0.0, '#4b5563'); ironGrad.addColorStop(0.5, '#1f2937'); ironGrad.addColorStop(1.0, '#111827');
+                    ctx.fillStyle = ironGrad;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill();
+
+                    // 3. Top Cylinder Ring Guard Mount Component
+                    ctx.fillStyle = '#374151'; ctx.fillRect(this.x - 6, this.y - this.r - 4, 12, 5);
+
+                    // 4. Draw Core Text Hazard Overlay Signage Symbol instead of cartoon emojis
+                    ctx.fillStyle = 'rgba(255, 0, 0, 0.7)'; ctx.font = 'bold 11px monospace'; ctx.textAlign = 'center';
+                    ctx.fillText('TNT', this.x, this.y + 4);
+                    
+                    ctx.restore();
+                }
+            }
+
+            // ==========================================================================
+            // SPECIAL PURPOSE EXCITON TRIGGER:五彩大抽搐霓虹炫目炸弹 💣
+            // ==========================================================================
+            class NeonRainbowTriggerBomb {
+                constructor() {
+                    this.r = 20;
+                    this.x = Math.random() * (SYSTEM_SETTING.CANVAS_W - 80) + 40;
+                    this.y = -this.r - 40;
+                }
+                update() { this.y += (SYSTEM_SETTING.SCROLL_SPEED_BASE * 1.1) * STATE_CORE.speedMultiplier; }
+                draw(ctx) {
+                    ctx.save();
+                    const hueCycle = (STATE_CORE.ticks * 20) % 360;
+                    const rainbowColor = `hsl(${hueCycle}, 100%, 55%)`;
+                    ctx.shadowBlur = 35; ctx.shadowColor = rainbowColor;
+
+                    // Fuse drawing mechanics
+                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.beginPath();
+                    ctx.moveTo(this.x, this.y - this.r); ctx.lineTo(this.x + 12, this.y - this.r - 16); ctx.stroke();
+
+                    const radGrad = ctx.createRadialGradient(this.x, this.y, 2, this.x, this.y, this.r);
+                    radGrad.addColorStop(0, '#ffffff'); radGrad.addColorStop(0.5, rainbowColor); radGrad.addColorStop(1, '#000000');
+                    ctx.fillStyle = radGrad;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill();
+                    
+                    ctx.fillStyle = '#000000'; ctx.font = '900 13px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText('RGB', this.x, this.y);
+                    ctx.restore();
+                }
+            }
+
+            // ==========================================================================
+            // SPECULAR LAVA TEXTURED METEOR ENTITY MATRIX
+            // ==========================================================================
+            class CraggedLavaVeinMeteor {
+                constructor() {
+                    this.r = 20 + Math.random() * 22;
+                    this.x = Math.random() * (SYSTEM_SETTING.CANVAS_W - 100) + 50;
+                    this.y = -this.r - 50;
+                    this.vy = (SYSTEM_SETTING.SCROLL_SPEED_BASE * 1.3) + Math.random() * 4.0;
+                    this.vx = (Math.random() - 0.5) * 3.0;
+                }
+                update() { this.y += this.vy * STATE_CORE.speedMultiplier; this.x += this.vx * STATE_CORE.speedMultiplier; }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.shadowBlur = 25; ctx.shadowColor = '#ff3c00';
+                    ctx.fillStyle = '#0b060e'; ctx.strokeStyle = '#ff3c00'; ctx.lineWidth = 3;
+                    
+                    // Draw faceted polygonal jagged outer boundaries nodes
+                    ctx.beginPath();
+                    for (let i = 0; i < 8; i++) {
+                        const ang = (i * Math.PI * 2) / 8;
+                        const offsetRadius = this.r * (0.85 + Math.sin(i * 3 + STATE_CORE.ticks * 0.05) * 0.12);
+                        const px = this.x + Math.cos(ang) * offsetRadius;
+                        const py = this.y + Math.sin(ang) * offsetRadius;
+                        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath(); ctx.fill(); ctx.stroke();
+
+                    // Internal incandescent superheated core magma faults
+                    ctx.strokeStyle = 'rgba(255, 230, 0, 0.6)'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.moveTo(this.x - this.r * 0.4, this.y - this.r * 0.2); ctx.lineTo(this.x + this.r * 0.3, this.y + this.r * 0.4); ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            // ==========================================================================
+            // CHROME CHROMATIC LIQUID GOLD LIQUID LUSTRE 67 CHARACTER EXPORT
+            // ==========================================================================
+            class PolishedLiquidChrome67 {
+                constructor() {
+                    this.r = 60;
+                    this.x = Math.random() * (SYSTEM_SETTING.CANVAS_W - 240) + 120;
+                    this.y = -this.r - 60;
+                    this.clock = Math.random() * Math.PI;
+                    this.vSpeed = SYSTEM_SETTING.SCROLL_SPEED_BASE * 0.70;
+                }
+                update() {
+                    this.y += this.vSpeed * STATE_CORE.speedMultiplier;
+                    this.clock += 0.05; this.x += Math.sin(this.clock) * 7.0;
+                }
+                draw(ctx) {
+                    ctx.save();
+                    
+                    // Real-time twitch reactive colour overrides layout mappings
+                    let chromeGrad = ctx.createLinearGradient(this.x, this.y - this.r, this.x, this.y + this.r);
+                    if (STATE_CORE.twitchFramesRemaining > 0) {
+                        const randHue = Math.random() * 360;
+                        chromeGrad.addColorStop(0.0, '#ffffff');
+                        chromeGrad.addColorStop(0.5, `hsl(${randHue}, 100%, 50%)`);
+                        chromeGrad.addColorStop(1.0, '#000000');
+                        ctx.shadowColor = `hsl(${randHue}, 100%, 50%)`;
                     } else {
-                        // Friction decayer mapping loops when finger is released
-                        this.targetVelocityX = 0;
-                        this.targetVelocityY = 0;
+                        chromeGrad.addColorStop(0.0, '#ffffff'); chromeGrad.addColorStop(0.25, '#fff4b8');
+                        chromeGrad.addColorStop(0.5, '#ffd700'); chromeGrad.addColorStop(0.75, '#a86200'); chromeGrad.addColorStop(1.0, '#ff2200');
+                        ctx.shadowColor = '#ff6a00';
                     }
-
-                    // Strict Velocity Clamping Limit Rules
-                    if (this.targetVelocityX > SYSTEM_CONFIG.MAX_VELOCITY_CAP) this.targetVelocityX = SYSTEM_CONFIG.MAX_VELOCITY_CAP;
-                    if (this.targetVelocityX < -SYSTEM_CONFIG.MAX_VELOCITY_CAP) this.targetVelocityX = -SYSTEM_CONFIG.MAX_VELOCITY_CAP;
-                    if (this.targetVelocityY > SYSTEM_CONFIG.MAX_VELOCITY_CAP) this.targetVelocityY = SYSTEM_CONFIG.MAX_VELOCITY_CAP;
-                    if (this.targetVelocityY < -SYSTEM_CONFIG.MAX_VELOCITY_CAP) this.targetVelocityY = -SYSTEM_CONFIG.MAX_VELOCITY_CAP;
-
-                    // High Precision Interp Linear Formula (Snake Fluid Vector Movement)
-                    this.velocityX += (this.targetVelocityX - this.velocityX) * SYSTEM_CONFIG.SNAKE_LERP_ALPHA_X;
-                    this.velocityY += (this.targetVelocityY - this.velocityY) * SYSTEM_CONFIG.SNAKE_LERP_ALPHA_Y;
-
-                    this.x += this.velocityX * ENGINE_STATE.activeVelocityMultiplier;
-                    this.y += this.velocityY * ENGINE_STATE.activeVelocityMultiplier;
-
-                    // Hard Geometric Boundaries Mapping Locks
-                    if (this.x - this.boundingRadius < 0) { this.x = this.boundingRadius; this.velocityX = 0; }
-                    if (this.x + this.boundingRadius > SYSTEM_CONFIG.RENDER_WIDTH) { this.x = SYSTEM_CONFIG.RENDER_WIDTH - this.boundingRadius; this.velocityX = 0; }
-                    if (this.y - this.boundingRadius < 0) { this.y = this.boundingRadius; this.velocityY = 0; }
-                    if (this.y + this.boundingRadius * 2 > SYSTEM_CONFIG.RENDER_HEIGHT) { this.y = SYSTEM_CONFIG.RENDER_HEIGHT - this.boundingRadius * 2; this.velocityY = 0; }
-
-                    // Continuous Propulsion Exhaust Vector Shards
-                    if (ENGINE_STATE.globalFrameCount % 2 === 0 && (Math.abs(this.velocityX) > 0.5 || Math.abs(this.velocityY) > 0.5)) {
-                        generateParticleNode(this.x, this.y + this.boundingRadius, 4, '#00f2fe', (Math.random() - 0.5) * 2.5, 4.0, 22);
-                    }
-                }
-
-                renderGraphics(ctx) {
-                    ctx.save();
                     
-                    let neonStrokeTheme = '#00f2fe';
-                    if (ENGINE_STATE.isRainbowFlashActive) {
-                        const hue = (ENGINE_STATE.globalFrameCount * 12) % 360;
-                        neonStrokeTheme = `hsl(${hue}, 100%, 60%)`;
-                    }
-
-                    ctx.shadowBlur = 25;
-                    ctx.shadowColor = neonStrokeTheme;
-
-                    // ADVANCED SHADER METHOD: Specular High-Reflective Sphere Radial Matrix
-                    const sphereRadialGrad = ctx.createRadialGradient(
-                        this.x - 8, this.y - 8, 2,
-                        this.x, this.y, this.boundingRadius
-                    );
-                    sphereRadialGrad.addColorStop(0, '#ffffff');
-                    sphereRadialGrad.addColorStop(0.3, neonStrokeTheme);
-                    sphereRadialGrad.addColorStop(0.8, '#03091e');
-                    sphereRadialGrad.addColorStop(1.0, '#000000');
-
-                    ctx.fillStyle = sphereRadialGrad;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.boundingRadius, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Real Structural Carbon Fiber Carrier Rigging Pipelines (No flat blocks)
-                    ctx.shadowBlur = 0;
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.moveTo(this.x - 10, this.y + this.boundingRadius - 2);
-                    ctx.lineTo(this.x - 6, this.y + this.boundingRadius + 18);
-                    ctx.moveTo(this.x + 10, this.y + this.boundingRadius - 2);
-                    ctx.lineTo(this.x + 6, this.y + this.boundingRadius + 18);
-                    ctx.stroke();
-
-                    // Metallic Storage Pod Basket Capsule
-                    ctx.fillStyle = '#050a1a';
-                    ctx.strokeStyle = neonStrokeTheme;
-                    ctx.lineWidth = 2;
-                    ctx.fillRect(this.x - 8, this.y + this.boundingRadius + 18, 16, 10);
-                    ctx.strokeRect(this.x - 8, this.y + this.boundingRadius + 18, 16, 10);
-
-                    ctx.restore();
-                }
-            }
-
-            // ENEMY TYPE CLASS DEFINITION: LIQUID LUSTRE CHROME 67 ENTITY
-            class PolishedChrome67Enemy {
-                constructor() {
-                    this.geometryRadius = 55;
-                    this.x = Math.random() * (SYSTEM_CONFIG.RENDER_WIDTH - 200) + 100;
-                    this.y = -this.geometryRadius - 50;
-                    this.oscillationClock = Math.random() * Math.PI;
-                    this.fallingVelocity = SYSTEM_CONFIG.GLOBAL_SCROLL_BASE * 0.75;
-                }
-
-                updateCalculations() {
-                    this.y += this.fallingVelocity * ENGINE_STATE.activeVelocityMultiplier;
-                    this.oscillationClock += 0.04;
-                    this.x += Math.sin(this.oscillationClock) * 6.5;
-
-                    // Volumetric Thermal Friction Spark Emitters
-                    if (ENGINE_STATE.globalFrameCount % 3 === 0) {
-                        generateParticleNode(this.x + (Math.random() - 0.5) * 40, this.y, 4, '#ffaa00', (Math.random() - 0.5) * 2, -3, 20);
-                    }
-                }
-
-                renderGraphics(ctx) {
-                    ctx.save();
-                    ctx.shadowBlur = 35;
-                    ctx.shadowColor = '#ff6600';
-
-                    // ADVANCED SHADER METHOD: Linear Multilayer Liquid Gold Gradient Mapping
-                    const chromeLinearGrad = ctx.createLinearGradient(
-                        this.x, this.y - this.geometryRadius,
-                        this.x, this.y + this.geometryRadius
-                    );
-                    chromeLinearGrad.addColorStop(0.0, '#ffffff');
-                    chromeLinearGrad.addColorStop(0.25, '#fff2a3');
-                    chromeLinearGrad.addColorStop(0.5, '#ffd700');
-                    chromeLinearGrad.addColorStop(0.75, '#995500');
-                    chromeLinearGrad.addColorStop(1.0, '#ff1100');
-
-                    ctx.fillStyle = chromeLinearGrad;
-                    ctx.font = '900 110px Impact, Arial Black, sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    
-                    // Render Vector Typography Nodes Instead of Cartoon Glyphs
+                    ctx.shadowBlur = 40; ctx.fillStyle = chromeGrad;
+                    ctx.font = '900 120px Impact, Arial Black, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                     ctx.fillText('67', this.x, this.y);
-
-                    // Overlay System Target Target crosshair alignment loops
-                    ctx.strokeStyle = 'rgba(255, 102, 0, 0.22)';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(this.x - this.geometryRadius - 10, this.y - this.geometryRadius, (this.geometryRadius + 10) * 2, this.geometryRadius * 2);
-
                     ctx.restore();
                 }
             }
 
-            // SPECULAR 3D SPINNING COIN MODEL
-            class SpecularGoldCoin {
+            class SpecularGoldCoinItem {
                 constructor() {
-                    this.radiusDimensions = 15;
-                    this.x = Math.random() * (SYSTEM_CONFIG.RENDER_WIDTH - this.radiusDimensions * 4) + this.radiusDimensions * 2;
-                    this.y = -this.radiusDimensions - 30;
-                    this.rotationAngleRad = Math.random() * Math.PI;
-                    this.rotationalVelocity = 0.07 + Math.random() * 0.04;
+                    this.r = 14; this.x = Math.random() * (SYSTEM_SETTING.CANVAS_W - 40) + 20; this.y = -30;
+                    this.rot = Math.random() * Math.PI;
                 }
-
-                updateCalculations() {
-                    this.y += SYSTEM_CONFIG.GLOBAL_SCROLL_BASE * ENGINE_STATE.activeVelocityMultiplier;
-                    this.rotationAngleRad += this.rotationalVelocity;
-                }
-
-                renderGraphics(ctx) {
-                    ctx.save();
-                    ctx.translate(this.x, this.y);
-                    
-                    const widthScaleRatio = Math.cos(this.rotationAngleRad);
-                    if (Math.abs(widthScaleRatio) < 0.02) { ctx.restore(); return; }
-                    ctx.scale(widthScaleRatio, 1);
-
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = '#ffd700';
-
-                    const coinGrad = ctx.createLinearGradient(-this.radiusDimensions, -this.radiusDimensions, this.radiusDimensions, this.radiusDimensions);
-                    coinGrad.addColorStop(0.0, '#7a5c00');
-                    coinGrad.addColorStop(0.4, '#ffd700');
-                    coinGrad.addColorStop(0.7, '#ffffff');
-                    coinGrad.addColorStop(1.0, '#543f00');
-
-                    ctx.fillStyle = coinGrad;
-                    ctx.beginPath(); ctx.arc(0, 0, this.radiusDimensions, 0, Math.PI * 2); ctx.fill();
-                    
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(-2, -5, 4, 10);
-
+                update() { this.y += SYSTEM_SETTING.SCROLL_SPEED_BASE * STATE_CORE.speedMultiplier; this.rot += 0.08; }
+                draw(ctx) {
+                    ctx.save(); ctx.translate(this.x, this.y); ctx.scale(Math.cos(this.rot), 1);
+                    ctx.shadowBlur = 20; ctx.shadowColor = '#ffd700';
+                    const cGrad = ctx.createLinearGradient(-14, -14, 14, 14);
+                    cGrad.addColorStop(0, '#ffd700'); cGrad.addColorStop(0.5, '#ffffff'); cGrad.addColorStop(1, '#b58600');
+                    ctx.fillStyle = cGrad; ctx.beginPath(); ctx.arc(0, 0, this.r, 0, Math.PI * 2); ctx.fill();
                     ctx.restore();
                 }
             }
 
-            // CRAGGED LAVA HAZARDOUS METEOR SHARDS
-            class CraggedLavaMeteor {
-                constructor() {
-                    this.boundingRadius = 18 + Math.random() * 18;
-                    this.x = Math.random() * (SYSTEM_CONFIG.RENDER_WIDTH - this.boundingRadius * 2) + this.boundingRadius;
-                    this.y = -this.boundingRadius - 40;
-                    this.velocityY = (SYSTEM_CONFIG.GLOBAL_SCROLL_BASE * 1.2) + Math.random() * 3.8;
-                    this.velocityX = (Math.random() - 0.5) * 3.5;
-                }
-
-                updateCalculations() {
-                    this.y += this.velocityY * ENGINE_STATE.activeVelocityMultiplier;
-                    this.x += this.velocityX * ENGINE_STATE.activeVelocityMultiplier;
-                }
-
-                renderGraphics(ctx) {
-                    ctx.save();
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = '#ff3300';
-                    
-                    ctx.fillStyle = '#09040c';
-                    ctx.strokeStyle = '#ff3300';
-                    ctx.lineWidth = 2.5;
-                    
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.boundingRadius, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.stroke();
-
-                    // Texture Core Fractured Vectors Loops Lines
-                    ctx.strokeStyle = 'rgba(255, 51, 0, 0.4)';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.moveTo(this.x - this.boundingRadius * 0.5, this.y - this.boundingRadius * 0.2);
-                    ctx.lineTo(this.x + this.boundingRadius * 0.4, this.y + this.boundingRadius * 0.5);
-                    ctx.stroke();
-                    
-                    ctx.restore();
-                }
-            }
-
-            // STRUCTURAL REUSABLE RUNTIME EFFECT VECTOR COMPONENTS
-            class VolumetricVectorParticle {
+            class VolumetricSparkParticle {
                 constructor(x, y, r, col, vx, vy, life) {
-                    this.x = x; this.y = y; this.radius = r; this.hexColor = col; this.vx = vx; this.vy = vy;
-                    this.maxLife = life; this.currentLife = life;
+                    this.x = x; this.y = y; this.r = r; this.col = col; this.vx = vx; this.vy = vy; this.max = life; this.life = life;
                 }
-                update() { this.x += this.vx; this.y += this.vy; this.currentLife--; }
+                update() { this.x += this.vx; this.y += this.vy; this.life--; }
                 draw(ctx) {
-                    ctx.save(); ctx.globalAlpha = this.currentLife / this.maxLife; ctx.fillStyle = this.hexColor;
-                    ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                    ctx.save(); ctx.globalAlpha = this.life / this.max; ctx.fillStyle = this.col;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
                 }
             }
 
-            class SpatialFloatingTextIndicator {
-                constructor(x, y, text, color) {
-                    this.x = x; this.y = y; this.text = text; this.color = color; this.ticks = 45;
-                }
-                update() { this.y -= 1.2; this.ticks--; }
+            class FloatingNotification {
+                constructor(x, y, txt, col) { this.x = x; this.y = y; this.txt = txt; this.col = col; this.life = 45; }
+                update() { this.y -= 1.5; this.life--; }
                 draw(ctx) {
-                    ctx.save(); ctx.globalAlpha = this.ticks / 45; ctx.font = '900 20px monospace';
-                    ctx.fillStyle = this.color; ctx.textAlign = 'center'; ctx.fillText(this.text, this.x, this.y); ctx.restore();
+                    ctx.save(); ctx.globalAlpha = this.life / 45; ctx.font = '900 22px monospace';
+                    ctx.fillStyle = this.col; ctx.textAlign = 'center'; ctx.fillText(this.txt, this.x, this.y); ctx.restore();
                 }
             }
 
-            function generateCosmosBackgroundStarfield() {
-                ENGINE_STATE.starfieldBackgroundPool = [];
-                for (let i = 0; i < 65; i++) {
-                    ENGINE_STATE.starfieldBackgroundPool.push({
-                        x: Math.random() * SYSTEM_CONFIG.RENDER_WIDTH,
-                        y: Math.random() * SYSTEM_CONFIG.RENDER_HEIGHT,
-                        size: 1.0 + Math.random() * 2.2,
-                        speedFactor: 0.3 + Math.random() * 0.75
-                    });
-                }
+            function spawnVectorSpark(x, y, r, col, vx, vy, life) {
+                if (STATE_CORE.particles.length > SYSTEM_SETTING.LIMITS.SPARKS) return;
+                STATE_CORE.particles.push(new VolumetricSparkParticle(x, y, r, col, vx, vy, life));
             }
 
-            function generateParticleNode(x, y, r, col, vx, vy, life) {
-                if (ENGINE_STATE.particlesPool.length > SYSTEM_CONFIG.ALLOCATION_CAPS.PARTICLES) return;
-                ENGINE_STATE.particlesPool.push(new VolumetricVectorParticle(x, y, r, col, vx, vy, life));
-            }
-
-            function triggerHighDensityShockwaveExplosion(originX, originY, densityCount, particleColorHex) {
-                for (let i = 0; i < densityCount; i++) {
-                    const angleRad = Math.random() * Math.PI * 2;
-                    const magnitude = 2.0 + Math.random() * 8.0;
-                    ENGINE_STATE.particlesPool.push(new VolumetricVectorParticle(
-                        originX, originY, 1.5 + Math.random() * 4.0, particleColorHex,
-                        Math.cos(angleRad) * magnitude, Math.sin(angleRad) * magnitude, 35
-                    ));
+            function triggerBurstCloud(x, y, count, color) {
+                for (let i = 0; i < count; i++) {
+                    const ang = Math.random() * Math.PI * 2; const mag = 2.0 + Math.random() * 9.0;
+                    spawnVectorSpark(x, y, 1.5 + Math.random() * 4.0, color, Math.cos(ang) * mag, Math.sin(ang) * mag, 35);
                 }
             }
 
             // ==========================================================================
-            // CORE INTERSECTION COLLISION MATRIX ENGINE
+            // SYSTEM LOGIC TRACKER & REAL INTERSECTION OVERLAY PROCESSORS
             // ==========================================================================
-            function executeIntegratedIntersectionCollisions() {
-                if (!ENGINE_STATE.heroBalloonInstance || ENGINE_STATE.isGameOver) return;
-                const hero = ENGINE_STATE.heroBalloonInstance;
+            function executeIntersectionVerificationMatrix() {
+                if (!STATE_CORE.balloon || STATE_CORE.over) return;
+                const h = STATE_CORE.balloon;
 
-                // Gold Coins Intersection Loop Pipeline
-                for (let i = ENGINE_STATE.coinsPool.length - 1; i >= 0; i--) {
-                    const coin = ENGINE_STATE.coinsPool[i];
-                    if (Math.hypot(hero.x - coin.x, hero.y - coin.y) < hero.boundingRadius + coin.radiusDimensions) {
-                        ENGINE_STATE.currentScore += 25;
-                        DOM_INTERFACE.score.textContent = formatScoreString(ENGINE_STATE.currentScore);
-                        
-                        dispatchSynthesizedAudioBeep('coin_grab');
-                        ENGINE_STATE.textIndicatorsPool.push(new SpatialFloatingTextIndicator(coin.x, coin.y, '+$25', '#ffd700'));
-                        triggerHighDensityShockwaveExplosion(coin.x, coin.y, 12, '#ffd700');
-                        
-                        ENGINE_STATE.coinsPool.splice(i, 1);
+                // 1. Regular Coin Acquisition Pool
+                for (let i = STATE_CORE.coins.length - 1; i >= 0; i--) {
+                    const c = STATE_CORE.coins[i];
+                    if (Math.hypot(h.x - c.x, h.y - c.y) < h.r + c.r) {
+                        STATE_CORE.score += 25; UI_DOM.score.textContent = formatScore(STATE_CORE.score);
+                        triggerAudioBeep('coin');
+                        STATE_CORE.floats.push(new FloatingNotification(c.x, c.y, '+$25', '#ffd700'));
+                        triggerBurstCloud(c.x, c.y, 12, '#ffd700');
+                        STATE_CORE.coins.splice(i, 1);
                     }
                 }
 
-                // Shard Meteors Collision Loop Pipeline
-                for (let i = ENGINE_STATE.meteorsPool.length - 1; i >= 0; i--) {
-                    const meteor = ENGINE_STATE.meteorsPool[i];
-                    if (Math.hypot(hero.x - meteor.x, hero.y - meteor.y) < hero.boundingRadius + meteor.boundingRadius) {
-                        executeTerminalEngineShutdownSequence(); return;
+                // 2. CRITICAL TRIGGER:撞击“五彩炸弹”开启极致疯狂全局大抽搐
+                for (let i = STATE_CORE.rainbowBombs.length - 1; i >= 0; i--) {
+                    const rb = STATE_CORE.rainbowBombs[i];
+                    if (Math.hypot(h.x - rb.x, h.y - rb.y) < h.r + rb.r) {
+                        triggerAudioBeep('twitch');
+                        STATE_CORE.twitchFramesRemaining = 120; // 持续120帧的高频超级抽搐
+                        document.body.classList.add('glitch-twitch-active');
+                        
+                        STATE_CORE.floats.push(new FloatingNotification(h.x, h.y - 45, 'RAINBOW GLITCH MATRIX!!!', '#ff00ff'));
+                        triggerBurstCloud(rb.x, rb.y, 40, '#00ffcc');
+                        STATE_CORE.rainbowBombs.splice(i, 1);
                     }
                 }
 
-                // HARDCORE REACTION: SEIZURE MATRIX DYNAMIC FLASHER LINKAGE UNDER 67 DEFEAT
-                for (let i = ENGINE_STATE.boss67Pool.length - 1; i >= 0; i--) {
-                    const boss = ENGINE_STATE.boss67Pool[i];
-                    if (Math.hypot(hero.x - boss.x, hero.y - boss.y) < hero.boundingRadius + boss.geometryRadius) {
-                        dispatchSynthesizedAudioBeep('boss_crash_67');
-                        
-                        // Flash background color matrices instantly
-                        ENGINE_STATE.isRainbowFlashActive = true;
-                        ENGINE_STATE.rainbowFlashRemainingTicks = 90;
-                        document.body.classList.add('rainbow-active-flash');
-                        
-                        triggerHighDensityShockwaveExplosion(boss.x, boss.y, 45, '#ff8800');
-                        ENGINE_STATE.textIndicatorsPool.push(new SpatialFloatingTextIndicator(hero.x, hero.y - 40, 'NEON SHOCK EXCITON', '#ff00ff'));
-                        
-                        ENGINE_STATE.boss67Pool.splice(i, 1);
-                    }
+                // 3. Black Iron Bomb Impact Terminal Destruction Chain
+                for (let i = STATE_CORE.bombs.length - 1; i >= 0; i--) {
+                    const b = STATE_CORE.bombs[i];
+                    if (Math.hypot(h.x - b.x, h.y - b.y) < h.r + b.r) { terminateEngineRuntime(); return; }
+                }
+
+                // 4. Cragged Lava Meteor Shard Lethal Overlap
+                for (let i = STATE_CORE.meteors.length - 1; i >= 0; i--) {
+                    const m = STATE_CORE.meteors[i];
+                    if (Math.hypot(h.x - m.x, h.y - m.y) < h.r + m.r) { terminateEngineRuntime(); return; }
+                }
+
+                // 5. Chrome Liquid 67 Massive Object Destruction Overlap
+                for (let i = STATE_CORE.chromes67.length - 1; i >= 0; i--) {
+                    const ch = STATE_CORE.chromes67[i];
+                    if (Math.hypot(h.x - ch.x, h.y - ch.y) < h.r + ch.r) { terminateEngineRuntime(); return; }
                 }
             }
 
             // ==========================================================================
-            // REALTIME SYSTEM TIMELINE TIMING MANAGER
+            // REALTIME CENTRALIZED PIPELINE CLOCK HEARTBEAT
             // ==========================================================================
-            function processRuntimeEnvironmentTimelineTicks() {
-                ENGINE_STATE.globalFrameCount++;
-                ENGINE_STATE.phaseTimelineProgress++;
+            function coreEngineRuntimeTick() {
+                if (!STATE_CORE.running) return;
 
-                // Seamless Environment Sky Cycles Transition Formula
-                if (ENGINE_STATE.phaseTimelineProgress >= SYSTEM_CONFIG.ENVIRONMENT_CYCLE_FRAMES) {
-                    ENGINE_STATE.phaseTimelineProgress = 0;
-                    if (ENGINE_STATE.activeEnvironmentPhase === 'DAYTIME') ENGINE_STATE.activeEnvironmentPhase = 'TWILIGHT';
-                    else if (ENGINE_STATE.activeEnvironmentPhase === 'TWILIGHT') ENGINE_STATE.activeEnvironmentPhase = 'NIGHTFALL';
-                    else ENGINE_STATE.activeEnvironmentPhase = 'DAYTIME';
-                    DOM_INTERFACE.phase.textContent = ENGINE_STATE.activeEnvironmentPhase;
+                STATE_CORE.ticks++;
+                STATE_CORE.phaseCounter++;
+
+                // Seamless Background Atmosphere Matrix Shifter Loop
+                if (STATE_CORE.phaseCounter >= SYSTEM_SETTING.ENVIRONMENT_DURATION) {
+                    STATE_CORE.phaseCounter = 0;
+                    if (STATE_CORE.envPhase === 'DAYTIME') STATE_CORE.envPhase = 'TWILIGHT';
+                    else if (STATE_CORE.envPhase === 'TWILIGHT') STATE_CORE.envPhase = 'NIGHTFALL';
+                    else STATE_CORE.envPhase = 'DAYTIME';
+                    UI_DOM.phase.textContent = STATE_CORE.envPhase;
                 }
 
-                // Seizure Flash Frame Lifecycle Tracker
-                if (ENGINE_STATE.isRainbowFlashActive) {
-                    ENGINE_STATE.rainbowFlashRemainingTicks--;
-                    if (ENGINE_STATE.rainbowFlashRemainingTicks <= 0) {
-                        ENGINE_STATE.isRainbowFlashActive = false;
-                        document.body.classList.remove('rainbow-active-flash');
+                // Glitch Twitch Decayer Frames Tracker
+                if (STATE_CORE.twitchFramesRemaining > 0) {
+                    STATE_CORE.twitchFramesRemaining--;
+                    if (STATE_CORE.twitchFramesRemaining <= 0) {
+                        document.body.classList.remove('glitch-twitch-active');
                     }
                 }
 
-                // Generative Array Factories Instantiation Buffers
-                if (ENGINE_STATE.globalFrameCount % 35 === 0) {
-                    if (ENGINE_STATE.coinsPool.length < SYSTEM_CONFIG.ALLOCATION_CAPS.COINS) ENGINE_STATE.coinsPool.push(new SpecularGoldCoin());
-                }
-                if (ENGINE_STATE.globalFrameCount % 70 === 0) {
-                    if (ENGINE_STATE.meteorsPool.length < SYSTEM_CONFIG.ALLOCATION_CAPS.METEORS) ENGINE_STATE.meteorsPool.push(new CraggedLavaMeteor());
-                }
-                if (ENGINE_STATE.globalFrameCount % 140 === 0) {
-                    if (ENGINE_STATE.boss67Pool.length < SYSTEM_CONFIG.ALLOCATION_CAPS.BOSS67) ENGINE_STATE.boss67Pool.push(new PolishedChrome67Enemy());
-                }
-            }
+                // Factory Allocator Scheduling Blocks
+                if (STATE_CORE.ticks % 30 === 0 && STATE_CORE.coins.length < SYSTEM_SETTING.LIMITS.ITEMS) STATE_CORE.coins.push(new SpecularGoldCoinItem());
+                if (STATE_CORE.ticks % 65 === 0 && STATE_CORE.bombs.length < SYSTEM_SETTING.LIMITS.BOMBS) STATE_CORE.bombs.push(new RealisticCastIronBomb());
+                if (STATE_CORE.ticks % 85 === 0 && STATE_CORE.meteors.length < SYSTEM_SETTING.LIMITS.METEORS) STATE_CORE.meteors.push(new CraggedLavaVeinMeteor());
+                if (STATE_CORE.ticks % 150 === 0 && STATE_CORE.chromes67.length < SYSTEM_SETTING.LIMITS.CHROMES) STATE_CORE.chromes67.push(new PolishedLiquidChrome67());
+                
+                // Specific specialized custom RGB bomb spawning timeline interval
+                if (STATE_CORE.ticks % 200 === 0) STATE_CORE.rainbowBombs.push(new NeonRainbowTriggerBomb());
 
-            function computeActiveEntitiesTranslationPools() {
-                // Background infinite scrolling mapping matrix
-                ENGINE_STATE.starfieldBackgroundPool.forEach(star => {
-                    star.y += SYSTEM_CONFIG.GLOBAL_SCROLL_BASE * star.speedFactor * ENGINE_STATE.activeVelocityMultiplier;
-                    if (star.y > SYSTEM_CONFIG.RENDER_HEIGHT) {
-                        star.y = 0; star.x = Math.random() * SYSTEM_CONFIG.RENDER_WIDTH;
+                // Update Object Translational Arrays Positions
+                STATE_CORE.balloon.update();
+                
+                [STATE_CORE.coins, STATE_CORE.bombs, STATE_CORE.meteors, STATE_CORE.chromes67, STATE_CORE.rainbowBombs].forEach(arr => {
+                    for (let i = arr.length - 1; i >= 0; i--) {
+                        arr[i].update(); if (arr[i].y > SYSTEM_SETTING.CANVAS_H + 90) arr.splice(i, 1);
                     }
                 });
 
-                if (ENGINE_STATE.heroBalloonInstance) {
-                    ENGINE_STATE.heroBalloonInstance.updateCalculations();
+                for (let i = STATE_CORE.particles.length - 1; i >= 0; i--) {
+                    STATE_CORE.particles[i].update(); if (STATE_CORE.particles[i].life <= 0) STATE_CORE.particles.splice(i, 1);
+                }
+                for (let i = STATE_CORE.floats.length - 1; i >= 0; i--) {
+                    STATE_CORE.floats[i].update(); if (STATE_CORE.floats[i].life <= 0) STATE_CORE.floats.splice(i, 1);
                 }
 
-                // Pool Cleaner Dynamic Arrays
-                processArrayTranslationLifespan(ENGINE_STATE.coinsPool);
-                processArrayTranslationLifespan(ENGINE_STATE.meteorsPool);
-                processArrayTranslationLifespan(ENGINE_STATE.boss67Pool);
+                executeIntersectionVerificationMatrix();
 
-                for (let i = ENGINE_STATE.particlesPool.length - 1; i >= 0; i--) {
-                    ENGINE_STATE.particlesPool[i].update();
-                    if (ENGINE_STATE.particlesPool[i].currentLife <= 0) ENGINE_STATE.particlesPool.splice(i, 1);
-                }
-
-                for (let i = ENGINE_STATE.textIndicatorsPool.length - 1; i >= 0; i--) {
-                    ENGINE_STATE.textIndicatorsPool[i].update();
-                    if (ENGINE_STATE.textIndicatorsPool[i].ticks <= 0) ENGINE_STATE.textIndicatorsPool.splice(i, 1);
-                }
-            }
-
-            function processArrayTranslationLifespan(targetPoolArray) {
-                for (let i = targetPoolArray.length - 1; i >= 0; i--) {
-                    targetPoolArray[i].updateCalculations();
-                    if (targetPoolArray[i].y > SYSTEM_CONFIG.RENDER_HEIGHT + 100) targetPoolArray.splice(i, 1);
-                }
-            }
-
-            // ==========================================================================
-            // GRAPHICS RENDERING CANVAS PIPELINE SHADERS
-            // ==========================================================================
-            function synthesizeSkyBackgroundLinearGrad(ctx) {
-                const gradBuffer = ctx.createLinearGradient(0, 0, 0, SYSTEM_CONFIG.RENDER_HEIGHT);
-                if (ENGINE_STATE.activeEnvironmentPhase === 'DAYTIME') {
-                    gradBuffer.addColorStop(0.0, '#020924'); gradBuffer.addColorStop(1.0, '#0a1745');
-                } else if (ENGINE_STATE.activeEnvironmentPhase === 'TWILIGHT') {
-                    gradBuffer.addColorStop(0.0, '#1d051c'); gradBuffer.addColorStop(1.0, '#0a0112');
+                // Clear Frame & Dynamic Ambient Shading Processors
+                const ctx = STATE_CORE.ctx;
+                const bgGrad = ctx.createLinearGradient(0, 0, 0, SYSTEM_SETTING.CANVAS_H);
+                
+                if (STATE_CORE.twitchFramesRemaining > 0) {
+                    // Inject erratic flashing backgrounds into canvas context directly under glitch rules
+                    bgGrad.addColorStop(0, Math.random() > 0.5 ? '#ff00ff' : '#000000');
+                    bgGrad.addColorStop(1, Math.random() > 0.5 ? '#00ffff' : '#010206');
                 } else {
-                    gradBuffer.addColorStop(0.0, '#010105'); gradBuffer.addColorStop(1.0, '#020208');
+                    if (STATE_CORE.envPhase === 'DAYTIME') { bgGrad.addColorStop(0, '#020b2b'); bgGrad.addColorStop(1, '#0b1d54'); }
+                    else if (STATE_CORE.envPhase === 'TWILIGHT') { bgGrad.addColorStop(0, '#210424'); bgGrad.addColorStop(1, '#080112'); }
+                    else { bgGrad.addColorStop(0, '#010104'); bgGrad.addColorStop(1, '#020208'); }
                 }
-                return gradBuffer;
-            }
+                ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, SYSTEM_SETTING.CANVAS_W, SYSTEM_SETTING.CANVAS_H);
 
-            function executeIntegratedGraphicsSceneRender() {
-                const ctx = ENGINE_STATE.ctx;
-                if (!ctx) return;
-
-                // Render Dynamic Background Sky Grid Systems Matrix
-                ctx.fillStyle = synthesizeSkyBackgroundLinearGrad(ctx);
-                ctx.fillRect(0, 0, SYSTEM_CONFIG.RENDER_WIDTH, SYSTEM_CONFIG.RENDER_HEIGHT);
-
-                // Scanning Neon Laser Alignment Grids
-                ctx.strokeStyle = 'rgba(0, 242, 254, 0.04)';
+                // Laser Neon Alignment Tracking Grid Systems (高清原生，无大头彩电黑线条)
+                ctx.strokeStyle = STATE_CORE.twitchFramesRemaining > 0 ? 'rgba(255,255,255,0.2)' : 'rgba(0, 242, 254, 0.05)';
                 ctx.lineWidth = 1;
-                const gridStep = 64;
-                for (let x = 0; x < SYSTEM_CONFIG.RENDER_WIDTH; x += gridStep) {
-                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, SYSTEM_CONFIG.RENDER_HEIGHT); ctx.stroke();
-                }
-                const scrollOffsetY = (ENGINE_STATE.globalFrameCount * 2.5) % gridStep;
-                for (let y = scrollOffsetY; y < SYSTEM_CONFIG.RENDER_HEIGHT; y += gridStep) {
-                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(SYSTEM_CONFIG.RENDER_WIDTH, y); ctx.stroke();
-                }
+                const step = 64;
+                for (let x = 0; x < SYSTEM_SETTING.CANVAS_W; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, SYSTEM_SETTING.CANVAS_H); ctx.stroke(); }
+                const scrollOffset = (STATE_CORE.ticks * 3.5) % step;
+                for (let y = scrollOffset; y < SYSTEM_SETTING.CANVAS_H; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(SYSTEM_SETTING.CANVAS_W, y); ctx.stroke(); }
 
-                // Render Cosmos Star Arrays Elements
-                ctx.fillStyle = '#ffffff';
-                ENGINE_STATE.starfieldBackgroundPool.forEach(star => {
-                    ctx.globalAlpha = star.speedFactor * 0.6;
-                    ctx.fillRect(star.x, star.y, star.size, star.size);
-                });
-                ctx.globalAlpha = 1.0; // Release canal locks
-
-                // Draw Active Engine Pool Targets Instances
-                ENGINE_STATE.coinsPool.forEach(c => c.renderGraphics(ctx));
-                ENGINE_STATE.meteorsPool.forEach(m => m.renderGraphics(ctx));
-                ENGINE_STATE.boss67Pool.forEach(b => b.renderGraphics(ctx));
+                // Instanced Pools Elements Frame Redraw pipelines
+                STATE_CORE.coins.forEach(c => c.draw(ctx));
+                STATE_CORE.bombs.forEach(b => b.draw(ctx));
+                STATE_CORE.meteors.forEach(m => m.draw(ctx));
+                STATE_CORE.chromes67.forEach(ch => ch.draw(ctx));
+                STATE_CORE.rainbowBombs.forEach(rb => rb.draw(ctx));
                 
-                if (ENGINE_STATE.heroBalloonInstance) {
-                    ENGINE_STATE.heroBalloonInstance.renderGraphics(ctx);
-                }
+                STATE_CORE.balloon.draw(ctx);
+                
+                STATE_CORE.particles.forEach(p => p.draw(ctx));
+                STATE_CORE.floats.forEach(f => f.draw(ctx));
 
-                ENGINE_STATE.particlesPool.forEach(p => p.draw(ctx));
-                ENGINE_STATE.textIndicatorsPool.forEach(t => t.draw(ctx));
+                requestAnimationFrame(coreEngineRuntimeTick);
+            }
+
+            function executePassiveRenderClear() {
+                if (STATE_CORE.running) return;
+                if (STATE_CORE.ctx) { STATE_CORE.ctx.fillStyle = '#010103'; STATE_CORE.ctx.fillRect(0, 0, SYSTEM_SETTING.CANVAS_W, SYSTEM_SETTING.CANVAS_H); }
+                requestAnimationFrame(executePassiveRenderClear);
             }
 
             // ==========================================================================
-            // HIGH CONTROLLABLE SMOOTH VECTOR TOUCH ENGINE BINDINGS (SNAKE PARADIGM)
+            // HIGH-PRECISION SWIPE VECTOR CAPTURE MECHANISM (SNAKE PARADIGM GESTURES)
             // ==========================================================================
-            function primaryEngineRuntimeLoopCoreTick() {
-                if (!ENGINE_STATE.isRunning) return;
+            function bootUpPipelineEngine() {
+                unlockAudioHardware();
+                flushResetMemoryState();
 
-                processRuntimeEnvironmentTimelineTicks();
-                computeActiveEntitiesTranslationPools();
-                executeIntegratedIntersectionCollisions();
-                executeIntegratedGraphicsSceneRender();
+                STATE_CORE.running = true; STATE_CORE.over = false;
+                UI_DOM.mask.style.display = 'none'; UI_DOM.hud.style.display = 'flex';
 
-                requestAnimationFrame(primaryEngineRuntimeLoopCoreTick);
+                // BIND GLOBAL SWIPE GESTURE DETECTING CHANNELS (手滑操作核心)
+                window.addEventListener('touchstart', touchStartGate, { passive: false });
+                window.addEventListener('touchmove', touchMoveGate, { passive: false });
+                window.addEventListener('touchend', touchEndGate, { passive: false });
+
+                // Keyboard Smooth Backup Listeners Mappings
+                window.addEventListener('keydown', keyboardStateGate);
+                window.addEventListener('keyup', keyboardStateGate);
+
+                requestAnimationFrame(coreEngineRuntimeTick);
             }
 
-            function executePrebootRenderPipe() {
-                if (ENGINE_STATE.isRunning) return;
-                const ctx = ENGINE_STATE.ctx;
-                if (ctx) {
-                    ctx.fillStyle = '#010205'; ctx.fillRect(0, 0, SYSTEM_CONFIG.RENDER_WIDTH, SYSTEM_CONFIG.RENDER_HEIGHT);
-                }
-                requestAnimationFrame(executePrebootRenderPipe);
-            }
-
-            function processHardwareEngineStartSequence() {
-                unlockAudioHardwareSystem();
-                flushClearAndResetEngineMemory();
-
-                ENGINE_STATE.isRunning = true;
-                ENGINE_STATE.isGameOver = false;
-
-                DOM_INTERFACE.mask.style.display = 'none';
-                DOM_INTERFACE.hud.style.display = 'flex';
-
-                // BINDING ADVANCED PURE INTERPOLATION SWIPE CAPTURE SYSTEM
-                window.addEventListener('touchstart', interceptHardwareTouchStart, { passive: false });
-                window.addEventListener('touchmove', interceptHardwareTouchMove, { passive: false });
-                window.addEventListener('touchend', interceptHardwareTouchEnd, { passive: false });
-
-                // Keyboard Smooth Movement Backup Listeners
-                window.addEventListener('keydown', interceptHardwareKeyboardAction);
-                window.addEventListener('keyup', interceptHardwareKeyboardAction);
-
-                requestAnimationFrame(primaryEngineRuntimeLoopCoreTick);
-            }
-
-            // CORE LOGIC: SNAKE-LIKE CONTINUOUS DRAG-SWIPE CONVERSION MATRIX
-            function interceptHardwareTouchStart(e) {
-                e.preventDefault(); unlockAudioHardwareSystem();
+            function touchStartGate(e) {
+                e.preventDefault(); unlockAudioHardware();
                 if (e.touches.length > 0) {
-                    const touch = e.touches[0];
-                    ENGINE_STATE.touchControlVector.startX = touch.clientX;
-                    ENGINE_STATE.touchControlVector.startY = touch.clientY;
-                    ENGINE_STATE.touchControlVector.currentX = touch.clientX;
-                    ENGINE_STATE.touchControlVector.currentY = touch.clientY;
-                    ENGINE_STATE.touchControlVector.deltaX = 0;
-                    ENGINE_STATE.touchControlVector.deltaY = 0;
-                    ENGINE_STATE.touchControlVector.isTracking = true;
-                    
-                    dispatchSynthesizedAudioBeep('swipe_vector');
+                    const t = e.touches[0];
+                    STATE_CORE.swipe.startX = t.clientX; STATE_CORE.swipe.startY = t.clientY;
+                    STATE_CORE.swipe.deltaX = 0; STATE_CORE.swipe.deltaY = 0;
+                    STATE_CORE.swipe.active = true;
                 }
             }
 
-            function interceptHardwareTouchMove(e) {
+            function touchMoveGate(e) {
                 e.preventDefault();
-                if (ENGINE_STATE.touchControlVector.isTracking && e.touches.length > 0) {
-                    const touch = e.touches[0];
-                    ENGINE_STATE.touchControlVector.currentX = touch.clientX;
-                    ENGINE_STATE.touchControlVector.currentY = touch.clientY;
-                    
-                    // Direct dynamic extraction offset calculations parameters
-                    ENGINE_STATE.touchControlVector.deltaX = ENGINE_STATE.touchControlVector.currentX - ENGINE_STATE.touchControlVector.startX;
-                    ENGINE_STATE.touchControlVector.deltaY = ENGINE_STATE.touchControlVector.currentY - ENGINE_STATE.touchControlVector.startY;
+                if (STATE_CORE.swipe.active && e.touches.length > 0) {
+                    const t = e.touches[0];
+                    // Dynamic offset trace vector mapping lengths
+                    STATE_CORE.swipe.deltaX = t.clientX - STATE_CORE.swipe.startX;
+                    STATE_CORE.swipe.deltaY = t.clientY - STATE_CORE.swipe.startY;
                 }
             }
 
-            function interceptHardwareTouchEnd(e) {
+            function touchEndGate(e) {
                 e.preventDefault();
-                // Release vector handles but keep momentum active inside update loop deceleration profiles
-                ENGINE_STATE.touchControlVector.isTracking = false;
-                ENGINE_STATE.touchControlVector.deltaX = 0;
-                ENGINE_STATE.touchControlVector.deltaY = 0;
+                STATE_CORE.swipe.active = false;
+                STATE_CORE.swipe.deltaX = 0; STATE_CORE.swipe.deltaY = 0;
             }
 
-            // Backup Keyboard Mappings Configurations
-            function interceptHardwareKeyboardAction(e) {
-                const activeState = e.type === 'keydown';
-                if (!ENGINE_STATE.heroBalloonInstance) return;
-
-                if (activeState) {
-                    ENGINE_STATE.touchControlVector.isTracking = true;
-                    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') ENGINE_STATE.touchControlVector.deltaX = -50;
-                    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') ENGINE_STATE.touchControlVector.deltaX = 50;
-                    if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') ENGINE_STATE.touchControlVector.deltaY = -40;
-                    if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') ENGINE_STATE.touchControlVector.deltaY = 40;
+            function keyboardStateGate(e) {
+                const press = e.type === 'keydown';
+                if (press) {
+                    STATE_CORE.swipe.active = true;
+                    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') STATE_CORE.swipe.deltaX = -60;
+                    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') STATE_CORE.swipe.deltaX = 60;
+                    if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') STATE_CORE.swipe.deltaY = -50;
+                    if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') STATE_CORE.swipe.deltaY = 50;
                     
-                    // Keyboard Numeric Mode Speed Fast Switches Mappings
-                    if (e.key === '1') switchActiveSpeedSetting('LOW', DOM_INTERFACE.vLow);
-                    if (e.key === '2') switchActiveSpeedSetting('MED', DOM_INTERFACE.vMed);
-                    if (e.key === '3') switchActiveSpeedSetting('HIGH', DOM_INTERFACE.vHigh);
+                    if (e.key === '1') adjustSpeedGate('LOW', UI_DOM.rLow);
+                    if (e.key === '2') adjustSpeedGate('MED', UI_DOM.rMed);
+                    if (e.key === '3') adjustSpeedGate('HIGH', UI_DOM.rHigh);
                 } else {
-                    ENGINE_STATE.touchControlVector.isTracking = false;
-                    ENGINE_STATE.touchControlVector.deltaX = 0;
-                    ENGINE_STATE.touchControlVector.deltaY = 0;
+                    STATE_CORE.swipe.active = false;
+                    STATE_CORE.swipe.deltaX = 0; STATE_CORE.swipe.deltaY = 0;
                 }
             }
 
-            // ==========================================================================
-            // TERMINAL LOSS DISCONNECT ENGINE DESTRUCTION PROCEDURES
-            // ==========================================================================
-            function executeTerminalEngineShutdownSequence() {
-                ENGINE_STATE.isRunning = false;
-                ENGINE_STATE.isGameOver = true;
-                
-                dispatchSynthesizedAudioBeep('death_terminate');
-                document.body.classList.remove('rainbow-active-flash');
+            function terminateEngineRuntime() {
+                STATE_CORE.running = false; STATE_CORE.over = true;
+                triggerAudioBeep('blast');
+                document.body.classList.remove('glitch-twitch-active');
 
-                if (ENGINE_STATE.heroBalloonInstance) {
-                    triggerHighDensityShockwaveExplosion(ENGINE_STATE.heroBalloonInstance.x, ENGINE_STATE.heroBalloonInstance.y, 55, '#00f2fe');
+                if (STATE_CORE.balloon) triggerBurstCloud(STATE_CORE.balloon.x, STATE_CORE.balloon.y, 60, '#00f2fe');
+
+                if (STATE_CORE.score > STATE_CORE.highScore) {
+                    STATE_CORE.highScore = STATE_CORE.score;
+                    localStorage.setItem('cyber_v6_high', STATE_CORE.highScore.toString());
+                    UI_DOM.high.textContent = formatScore(STATE_CORE.highScore);
                 }
 
-                if (ENGINE_STATE.currentScore > ENGINE_STATE.highScore) {
-                    ENGINE_STATE.highScore = ENGINE_STATE.currentScore;
-                    localStorage.setItem('cyber_v5_high', ENGINE_STATE.highScore.toString());
-                    DOM_INTERFACE.high.textContent = formatScoreString(ENGINE_STATE.highScore);
-                }
+                UI_DOM.btn.textContent = 'START GAME';
+                UI_DOM.mask.style.display = 'flex'; UI_DOM.hud.style.display = 'none';
 
-                // Revert Interactive Structures Masks Elements
-                DOM_INTERFACE.startBtn.textContent = 'START GAME';
-                DOM_INTERFACE.mask.style.display = 'flex';
-                DOM_INTERFACE.hud.style.display = 'none';
-
-                // Unbind touch listener arrays safety checks
-                window.removeEventListener('touchstart', interceptHardwareTouchStart);
-                window.removeEventListener('touchmove', interceptHardwareTouchMove);
-                window.removeEventListener('touchend', interceptHardwareTouchEnd);
-                window.removeEventListener('keydown', interceptHardwareKeyboardAction);
-                window.removeEventListener('keyup', interceptHardwareKeyboardAction);
+                window.removeEventListener('touchstart', touchStartGate);
+                window.removeEventListener('touchmove', touchMoveGate);
+                window.removeEventListener('touchend', touchEndGate);
+                window.removeEventListener('keydown', keyboardStateGate);
+                window.removeEventListener('keyup', keyboardStateGate);
             }
 
-            function flushClearAndResetEngineMemory() {
-                ENGINE_STATE.currentScore = 0;
-                ENGINE_STATE.globalFrameCount = 0;
-                ENGINE_STATE.phaseTimelineProgress = 0;
-                ENGINE_STATE.activeEnvironmentPhase = 'DAYTIME';
-                ENGINE_STATE.isRainbowFlashActive = false;
-                
-                DOM_INTERFACE.score.textContent = '000000';
-                DOM_INTERFACE.phase.textContent = 'DAYTIME';
+            function flushResetMemoryState() {
+                STATE_CORE.score = 0; STATE_CORE.ticks = 0; STATE_CORE.phaseCounter = 0;
+                STATE_CORE.envPhase = 'DAYTIME'; STATE_CORE.twitchFramesRemaining = 0;
+                UI_DOM.score.textContent = '000000'; UI_DOM.phase.textContent = 'DAYTIME';
 
-                ENGINE_STATE.coinsPool = [];
-                ENGINE_STATE.meteorsPool = [];
-                ENGINE_STATE.boss67Pool = [];
-                ENGINE_STATE.particlesPool = [];
-                ENGINE_STATE.textIndicatorsPool = [];
+                STATE_CORE.coins = []; STATE_CORE.bombs = []; STATE_CORE.meteors = [];
+                STATE_CORE.chromes67 = []; STATE_CORE.rainbowBombs = [];
+                STATE_CORE.particles = []; STATE_CORE.floats = [];
 
-                ENGINE_STATE.heroBalloonInstance = new MetallicCyberBalloonHero();
+                STATE_CORE.balloon = new UltraRealisticHotAirBalloon();
             }
-
-            // ==========================================================================
-            // MATHEMATICAL HARD RESILIENT MATH FACTORIES REGISTER MATRIX
-            // ==========================================================================
-            // The auxiliary blocks below maintain full operational code footprint lines
-            // to fulfill architectural scale standards without compression hacks.
-            class InternalPrecisionVectorTrigMath {
-                constructor() { this.sinLookup = new Float32Array(360); this.cosLookup = new Float32Array(360); this.buildTrigArrays(); }
-                buildTrigArrays() { for (let a = 0; a < 360; a++) { const rad = (a * Math.PI) / 180; this.sinLookup[a] = Math.sin(rad); this.cosLookup[a] = Math.cos(rad); } }
-                extractSin(a) { let n = Math.floor(a) % 360; if (n < 0) n += 360; return this.sinLookup[n]; }
-                extractCos(a) { let n = Math.floor(a) % 360; if (n < 0) n += 360; return this.cosLookup[n]; }
-            }
-            const precisionEngineTrigCache = new InternalPrecisionVectorTrigMath();
-
-            class GeometricBoundaryEngineValidator {
-                static verifyPointDistance(px, py, qx, qy, range) { return Math.hypot(px - qx, py - qy) < range; }
-                static calculateVectorDotProduct(ax, ay, bx, by) { return ax * bx + ay * by; }
-            }
-
-            class GlobalTelemetrySystemProfilingExporter {
-                static generateSnapshotJSON() {
-                    return JSON.stringify({
-                        score: ENGINE_STATE.currentScore,
-                        multiplier: ENGINE_STATE.activeVelocityMultiplier,
-                        phase: ENGINE_STATE.activeEnvironmentPhase,
-                        pools: { c: ENGINE_STATE.coinsPool.length, m: ENGINE_STATE.meteorsPool.length, p: ENGINE_STATE.particlesPool.length }
-                    });
-                }
-            }
-
-            class CoreHardwareEngineStateMutexValidator {
-                static runSanityVerification() {
-                    if (SYSTEM_CONFIG.RENDER_WIDTH !== 768) return false;
-                    if (ENGINE_STATE.currentScore < 0) ENGINE_STATE.currentScore = 0;
-                    return true;
-                }
-            }
-            
-            CoreHardwareEngineStateMutexValidator.runSanityVerification();
-
         })();
     </script>
 </body>
