@@ -665,26 +665,44 @@ function executeSpeedShiftEvent(modeString, domAnchor) {
 
             // SPINNING HIGH VECTOR SPECULAR REWARD GOLD COINS
             class SpecularGoldRewardCoin {
-                constructor() {
-                    this.coinRadius = 14;
-                    this.x = Math.random() * (SYSTEM_SETTING.V_WIDTH - 60) + 30;
-                    this.y = -this.coinRadius - 20;
-                    this.rotationRad = Math.random() * Math.PI;
-                }
-                updateCalculations() {
-                    this.y += SYSTEM_SETTING.SCROLL_VELOCITY_BASE * STATE_ENGINE.activeSpeedMultiplier;
-                    this.rotationRad += 0.09;
-                }
-                renderGraphics(ctx) {
-                    ctx.save(); ctx.translate(this.x, this.y); ctx.scale(Math.cos(this.rotationRad), 1);
-                    ctx.shadowBlur = 20; ctx.shadowColor = '#ffd700';
-                    const goldGrad = ctx.createLinearGradient(-14, -14, 14, 14);
-                    goldGrad.addColorStop(0, '#ffd700'); goldGrad.addColorStop(0.5, '#ffffff'); goldGrad.addColorStop(1, '#92400e');
-                    ctx.fillStyle = goldGrad; ctx.beginPath(); ctx.arc(0, 0, this.coinRadius, 0, Math.PI * 2); ctx.fill();
-                    ctx.restore();
-                }
-            }
+    constructor() {
+        this.coinRadius = 14;
+        this.x = Math.random() * (SYSTEM_SETTING.V_WIDTH - 60) + 30;
+        this.y = -this.coinRadius - 20;
+        this.rotationRad = Math.random() * Math.PI;
+    }
+    updateCalculations() {
+        // 固定速度，不再受外部调节影响
+        this.y += SYSTEM_SETTING.SCROLL_VELOCITY_BASE;
+        this.rotationRad += 0.09;
+    }
+    renderGraphics(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.scale(Math.cos(this.rotationRad), 1);
+        
+        // 3D 径向渐变
+        const grad = ctx.createRadialGradient(-5, -5, 2, 0, 0, this.coinRadius);
+        grad.addColorStop(0, '#fff9c4');
+        grad.addColorStop(0.5, '#ffd700');
+        grad.addColorStop(1, '#92400e');
+        
+        ctx.fillStyle = grad;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#ffd700';
 
+        ctx.beginPath();
+        // 3D 椭圆压扁效果
+        ctx.ellipse(0, 0, this.coinRadius, this.coinRadius * 0.85, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 金色边缘描边
+        ctx.strokeStyle = '#92400e';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+    }
+}
             // VOLUMETRIC SIMULATION ENGINE PREREQUISITE PARTICLE AND NOTIFICATION VECTORS
             class StructuralSparkNode {
                 constructor(x, y, r, col, vx, vy, life) {
