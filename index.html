@@ -1,139 +1,545 @@
 <!DOCTYPE html>
-<html lang="en" data-framework="cyber-arcade-v3" data-hardware-acceleration="true">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CYBERPUNK NEON ARCADE ENGINE PRO v3.0.0</title>
-    <link rel="stylesheet" href="style.css">
+    <title>CYBERPUNK NEON ARCADE v3.0</title>
+    <style>
+        /* ==========================================================================
+           HARDCORE CYBER ADVANCED STYLE SHADER SHEET
+           ========================================================================== */
+        :root {
+            --cyber-black: #020205;
+            --cyber-cyan: #00f2fe;
+            --cyber-pink: #ff0055;
+            --cyber-gold: #ffd700;
+            --cyber-white: #ffffff;
+            --font-engine: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+            outline: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--cyber-black);
+            font-family: var(--font-engine);
+            color: var(--cyber-white);
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #0a1128 0%, #010206 100%);
+        }
+
+        /* Hardware Render CRT Scanline Overlay Effect */
+        .crt-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        canvas {
+            display: block;
+            background-color: #020207;
+            border: 2px solid rgba(0, 242, 254, 0.3);
+            box-shadow: 0 0 40px rgba(0, 242, 254, 0.15);
+        }
+
+        /* Realtime Dashboard Panel HUD System */
+        #hud-overlay-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .hud-card {
+            background: rgba(3, 4, 12, 0.85);
+            border-left: 4px solid var(--cyber-cyan);
+            padding: 6px 12px;
+            min-width: 140px;
+        }
+
+        .hud-title {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .hud-value {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--cyber-cyan);
+            text-shadow: 0 0 5px var(--cyber-cyan);
+        }
+
+        /* Interface Overlay Mask Configuration */
+        #ui-menu-mask {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(1, 2, 5, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .menu-wrapper {
+            text-align: center;
+        }
+
+        /* Pure Square Minimalist Action Controller */
+        #start-btn {
+            background: transparent;
+            border: 2px solid var(--cyber-cyan);
+            color: var(--cyber-cyan);
+            padding: 16px 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            font-family: var(--font-engine);
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        #start-btn:hover {
+            background: var(--cyber-cyan);
+            color: var(--cyber-black);
+            box-shadow: 0 0 30px var(--cyber-cyan);
+        }
+
+        #start-btn:active {
+            transform: scale(0.98);
+        }
+
+        body.rainbow-flash #game-container {
+            animation: crazyFlash 0.1s infinite linear;
+        }
+
+        @keyframes crazyFlash {
+            0% { background-color: #ff0055; }
+            50% { background-color: #00ffcc; }
+            100% { background-color: #9900ff; }
+        }
+    </style>
 </head>
-<body data-system-status="ready" data-audio-initialized="false" data-control-mode="snake-vector">
-
-    <svg id="cyber-core-svg-filters" style="position: absolute; width: 0; height: 0; overflow: hidden;" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <filter id="neon-glow-ultra" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="8" result="blur1" />
-                <feGaussianBlur stdDeviation="15" result="blur2" />
-                <feGaussianBlur stdDeviation="25" result="blur3" />
-                <feMerge>
-                    <feMergeNode in="blur3" />
-                    <feMergeNode in="blur2" />
-                    <feMergeNode in="blur1" />
-                    <feMergeNode in="SourceGraphic" />
-                </feMerge>
-            </filter>
-
-            <filter id="hologram-glitch" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.05 0.95" numOctaves="1" result="noise" />
-                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 150 -15" result="sharpNoise"/>
-                <feDisplacementMap in="SourceGraphic" in2="sharpNoise" scale="25" xChannelSelector="R" yChannelSelector="G" result="displacement"/>
-            </filter>
-
-            <filter id="chromatic-aberration">
-                <feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"/>
-                <feOffset dx="-3" dy="0" in="red" result="redOffset"/>
-                <feOffset dx="3" dy="0" in="blue" result="blueOffset"/>
-                <feMerge>
-                    <feMergeNode in="redOffset"/>
-                    <feMergeNode in="green"/>
-                    <feMergeNode in="blueOffset"/>
-                </feMerge>
-            </filter>
-        </defs>
-    </svg>
+<body>
 
     <div id="game-container">
+        <div class="crt-overlay"></div>
         
-        <div class="crt-overlay-hardware"></div>
-        <div class="cyber-scanline-animation"></div>
-
-        <canvas id="gameCanvas" width="768" height="1024"></canvas>
-
-        <div id="speed-matrix-panel">
-            <div class="panel-glitch-title" data-text="ENGINE_VELOCITY">ENGINE_VELOCITY</div>
-            <div class="speed-options-group">
-                <button class="speed-trigger-btn active" id="speed-low" data-speed-mode="LOW">
-                    <span class="btn-indicator"></span>LOW
-                </button>
-                <button class="speed-trigger-btn" id="speed-med" data-speed-mode="MED">
-                    <span class="btn-indicator"></span>MEDIUM
-                </button>
-                <button class="speed-trigger-btn" id="speed-high" data-speed-mode="HIGH">
-                    <span class="btn-indicator"></span>HIGH
-                </button>
+        <div id="hud-overlay-panel">
+            <div class="hud-card">
+                <div class="hud-title">SCORE</div>
+                <div class="hud-value" id="hud-score">0</div>
             </div>
-            <div class="panel-status-registry">CORE_CLOCK: LOCKED</div>
-        </div>
-
-        <div id="hud" class="hud-hidden">
-            <div class="hud-metric-card" id="card-score">
-                <div class="metric-tag">DATA_SCORE</div>
-                <div class="metric-value" id="score-val">0</div>
-                <div class="metric-bar"><div class="fill-inner" id="score-bar-fill"></div></div>
-            </div>
-            <div class="hud-metric-card" id="card-phase">
-                <div class="metric-tag">WORLD_PHASE</div>
-                <div class="metric-value" id="time-display">DAYTIME</div>
-                <div class="metric-bar"><div class="fill-inner" id="phase-bar-fill"></div></div>
-            </div>
-            <div class="hud-metric-card" id="card-best">
-                <div class="metric-tag">MAX_RECORD</div>
-                <div class="metric-value" id="high-val">0</div>
-                <div class="metric-bar"><div class="fill-inner" id="best-bar-fill"></div></div>
+            <div class="hud-card" style="border-left-color: var(--cyber-gold)">
+                <div class="hud-title">HI-SCORE</div>
+                <div class="hud-value" id="hud-high" style="color: var(--cyber-gold); text-shadow: 0 0 5px var(--cyber-gold)">0</div>
             </div>
         </div>
 
-        <div id="ui-overlay" class="overlay-visible">
-            <div class="menu-structure-wrapper">
-                <div class="glitch-title-container">
-                    <h1 id="dynamic-state-title" data-text="START GAME">START GAME</h1>
-                </div>
-                <div class="button-action-frame">
-                    <button id="start-btn">
-                        <span class="corner-tr"></span>
-                        <span class="corner-bl"></span>
-                        LAUNCH SYSTEM
-                    </button>
-                </div>
+        <canvas id="arcadeCanvas" width="768" height="1024"></canvas>
+
+        <div id="ui-menu-mask">
+            <div class="menu-wrapper">
+                <button id="start-btn">START GAME</button>
             </div>
         </div>
-
     </div>
 
-    <div style="display:none;" id="engine-dom-registry-manifest">
-        <div id="node-0" class="meta-node" data-desc="Canvas Engine Frame Context Pipeline"></div>
-        <div id="node-1" class="meta-node" data-desc="Low Latency Snake Interp Direction Control Active"></div>
-        <div id="node-2" class="meta-node" data-desc="WebAudio Oscillator Synths Network Layer Ready"></div>
-        <div id="node-3" class="meta-node" data-desc="High Contrast Metallic Shading Gradient Buffers Active"></div>
-        <div id="node-4" class="meta-node" data-desc="Multi-Color Seizure Flash Grid Matrix Loaded"></div>
-        <div id="node-5" class="meta-node" data-desc="Dual Touch Left-Right Screen Geometric Boundary Loaded"></div>
-        <div id="node-6" class="meta-node" data-desc="67 Impact Destruction Low Frequency Oscillator Synth Active"></div>
-        <div id="node-7" class="meta-node" data-desc="Speed Level Modifiers Velocity Realtime Ingestion Complete"></div>
-        <div id="node-8" class="meta-node" data-desc="Zero Text UI Overhaul Layout Controller Functional"></div>
-        <div id="node-9" class="meta-node" data-desc="Particle Buffering Dynamic Allocation Stack Active"></div>
-        <div id="node-10" class="meta-node" data-desc="Screen Jitter Displacement Matrix Stabilized"></div>
-        <div id="node-11" class="meta-node" data-desc="Global Timeline Tick Sequencer Initialized"></div>
-        <div id="node-12" class="meta-node" data-desc="Meteor Drop Cascade Speed Physics Model Standardized"></div>
-        <div id="node-13" class="meta-node" data-desc="Premium Shield Upgrade Energy Layer Active"></div>
-        <div id="node-14" class="meta-node" data-desc="Coin Storm Drop Frequency Counter Registered"></div>
-        <div id="node-15" class="meta-node" data-desc="DOM Geometry Allocation Padding Integrity Complete"></div>
-        <div id="node-16" class="meta-node" data-desc="Anti Aliasing Canvas Scaling Ratio Synced"></div>
-        <div id="node-17" class="meta-node" data-desc="High Contrast Overlay Neon Vector Shaders Compiled"></div>
-        <div id="node-18" class="meta-node" data-desc="Zero-Lag Touch Input Intercept Vector Ingested"></div>
-        <div id="node-19" class="meta-node" data-desc="Hardware Vendor Profiler Pipeline Validated"></div>
-        <div id="node-20" class="meta-node" data-desc="Fallback Event Handlers System Pool Declared"></div>
-        <div id="node-21" class="meta-node" data-desc="LocalStorage High Score Ingestion Safe Mode"></div>
-        <div id="node-22" class="meta-node" data-desc="Floating Score Indicators Canvas Vector Pre-rendered"></div>
-        <div id="node-23" class="meta-node" data-desc="Day Twilight Night Time Environment Interp Map Complete"></div>
-        <div id="node-24" class="meta-node" data-desc="Advanced Chromatic Displacement Filter Cache Hooked"></div>
-        <div id="node-25" class="meta-node" data-desc="CRT Overlay Scanline Emulation Frequency Stable"></div>
-        <div id="node-26" class="meta-node" data-desc="High Frequency Sine Audio Buffer Registry Configured"></div>
-        <div id="node-27" class="meta-node" data-desc="Metallic Reflections Physics Model Base Matrix Ready"></div>
-        <div id="node-28" class="meta-node" data-desc="Zero Tolerance Cartoon Graphics Filter Stack Enabled"></div>
-        <div id="node-29" class="meta-node" data-desc="Terminal Destruction Cleanup Function Bindings Finished"></div>
-        <div id="node-30" class="meta-node" data-desc="End Of Document Engine Registry Frame Structure Check"></div>
-    </div>
+    <script>
+        (function () {
+            'use strict';
 
+            // Global Constant Parameters
+            const CONFIG = {
+                WIDTH: 768,
+                HEIGHT: 1024,
+                SNAKE_LERP_X: 0.15, // Snake smooth handling lag-free factor
+                SNAKE_LERP_Y: 0.12,
+                SCROLL_SPEED: 6,
+                MAX_PARTICLES: 200
+            };
+
+            // Runtime Memory Stack
+            const STATE = {
+                ctx: null,
+                running: false,
+                gameOver: false,
+                score: 0,
+                highScore: parseInt(localStorage.getItem('cyber_high') || '0'),
+                frameCount: 0,
+                
+                hero: null,
+                coins: [],
+                meteors: [],
+                boss67: [],
+                particles: [],
+                
+                input: { left: false, right: false },
+                rainbowFrames: 0,
+                audioCtx: null
+            };
+
+            // DOM Selectors Linker
+            const DOM = {
+                mask: document.getElementById('ui-menu-mask'),
+                btn: document.getElementById('start-btn'),
+                hud: document.getElementById('hud-overlay-panel'),
+                score: document.getElementById('hud-score'),
+                high: document.getElementById('hud-high'),
+                canvas: document.getElementById('arcadeCanvas')
+            };
+
+            // Initialize App Core Setup
+            window.addEventListener('DOMContentLoaded', () => {
+                STATE.ctx = DOM.canvas.getContext('2d');
+                DOM.high.textContent = STATE.highScore;
+                adjustViewportScaling();
+                
+                // One Event Listener Rule for Instant Start
+                DOM.btn.addEventListener('click', bootUpSequence);
+                window.addEventListener('resize', adjustViewportScaling);
+            });
+
+            function adjustViewportScaling() {
+                const ratio = CONFIG.WIDTH / CONFIG.HEIGHT;
+                let w = window.innerWidth, h = window.innerHeight;
+                if (w / h > ratio) w = h * ratio; else h = w / ratio;
+                DOM.canvas.style.width = `${w}px`;
+                DOM.canvas.style.height = `${h}px`;
+            }
+
+            function unlockAudioNode() {
+                if (!STATE.audioCtx) {
+                    STATE.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (STATE.audioCtx.state === 'suspended') STATE.audioCtx.resume();
+            }
+
+            function playSynthFx(type) {
+                if (!STATE.audioCtx) return;
+                const now = STATE.audioCtx.currentTime;
+                const osc = STATE.audioCtx.createOscillator();
+                const gain = STATE.audioCtx.createGain();
+
+                if (type === 'coin') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    osc.frequency.setValueAtTime(1320, now + 0.05);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                } else if (type === 'hit') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(120, now);
+                    osc.frequency.linearRampToValueAtTime(40, now + 0.4);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                } else {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(200, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.linearRampToValueAtTime(0.001, now + 0.08);
+                }
+                osc.connect(gain); gain.connect(STATE.audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.4);
+            }
+
+            // Hero Dynamic Interpolation Physics Model
+            class CyberBalloon {
+                constructor() {
+                    this.x = CONFIG.WIDTH / 2;
+                    this.y = CONFIG.HEIGHT * 0.75;
+                    this.r = 24;
+                    this.vx = 0;
+                    this.vy = 0;
+                }
+                update() {
+                    let targetVx = 0;
+                    if (STATE.input.left) targetVx = -10;
+                    if (STATE.input.right) targetVx = 10;
+                    let targetVy = (STATE.input.left || STATE.input.right) ? -7 : 4;
+
+                    // Interpolation Equation (Snake Smooth Feel Handling)
+                    this.vx += (targetVx - this.vx) * CONFIG.SNAKE_LERP_X;
+                    this.vy += (targetVy - this.vy) * CONFIG.SNAKE_LERP_Y;
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x - this.r < 0) { this.x = this.r; this.vx = 0; }
+                    if (this.x + this.r > CONFIG.WIDTH) { this.x = CONFIG.WIDTH - this.r; this.vx = 0; }
+                    if (this.y - this.r < 0) { this.y = this.r; this.vy = 0; }
+                    if (this.y + this.r > CONFIG.HEIGHT) { this.y = CONFIG.HEIGHT - this.r; this.vy = 0; }
+
+                    if (STATE.frameCount % 2 === 0 && (STATE.input.left || STATE.input.right)) {
+                        spawnParticle(this.x, this.y + this.r, 3, '#00f2fe', (Math.random() - 0.5) * 2, 3);
+                    }
+                }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = STATE.rainbowFrames > 0 ? '#ff00ff' : '#00f2fe';
+                    
+                    const grad = ctx.createRadialGradient(this.x - 6, this.y - 6, 2, this.x, this.y, this.r);
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.4, '#00f2fe');
+                    grad.addColorStop(1, '#020514');
+                    
+                    ctx.fillStyle = grad;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // Enemy Model Type: Metallic 67 Object
+            class Enemy67 {
+                constructor() {
+                    this.r = 50;
+                    this.x = Math.random() * (CONFIG.WIDTH - 120) + 60;
+                    this.y = -60;
+                    this.clock = Math.random() * Math.PI;
+                    this.speed = CONFIG.SCROLL_SPEED * 0.8;
+                }
+                update() {
+                    this.y += this.speed;
+                    this.clock += 0.05;
+                    this.x += Math.sin(this.clock) * 5;
+                }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.shadowBlur = 25;
+                    ctx.shadowColor = '#ffd700';
+                    ctx.fillStyle = '#ffd700';
+                    ctx.font = '900 84px Impact, Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('67', this.x, this.y);
+                    ctx.restore();
+                }
+            }
+
+            class GoldCoin {
+                constructor() {
+                    this.r = 14;
+                    this.x = Math.random() * (CONFIG.WIDTH - 40) + 20;
+                    this.y = -30;
+                }
+                update() { this.y += CONFIG.SCROLL_SPEED; }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.shadowBlur = 15; ctx.shadowColor = '#ffd700';
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            class MeteorShard {
+                constructor() {
+                    this.r = 16 + Math.random() * 15;
+                    this.x = Math.random() * (CONFIG.WIDTH - 40) + 20;
+                    this.y = -40;
+                    this.vy = CONFIG.SCROLL_SPEED * 1.2 + Math.random() * 2;
+                }
+                update() { this.y += this.vy; }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.shadowBlur = 15; ctx.shadowColor = '#ff0055';
+                    ctx.strokeStyle = '#ff0055'; ctx.fillStyle = '#0a030d'; ctx.lineWidth = 3;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            class VectorParticle {
+                constructor(x, y, r, col, vx, vy) {
+                    this.x = x; this.y = y; this.r = r; this.col = col; this.vx = vx; this.vy = vy; this.life = 30;
+                }
+                update() { this.x += this.vx; this.y += this.vy; this.life--; }
+                draw(ctx) {
+                    ctx.save(); ctx.globalAlpha = this.life / 30; ctx.fillStyle = this.col;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                }
+            }
+
+            function spawnParticle(x, y, r, col, vx, vy) {
+                if (STATE.particles.length > CONFIG.MAX_PARTICLES) return;
+                STATE.particles.push(new VectorParticle(x, y, r, col, vx, vy));
+            }
+
+            function triggerExplosionCloud(x, y, color) {
+                for (let i = 0; i < 20; i++) {
+                    const angle = Math.random() * Math.PI * 2; const spd = 1 + Math.random() * 5;
+                    spawnParticle(x, y, 2 + Math.random() * 3, color, Math.cos(angle) * spd, Math.sin(angle) * spd);
+                }
+            }
+
+            // Realtime Core Pipeline Intersection Loop
+            function handleCollisionsAndVerification() {
+                if (!STATE.hero || STATE.gameOver) return;
+                const h = STATE.hero;
+
+                // Coin Collection Pipe
+                for (let i = STATE.coins.length - 1; i >= 0; i--) {
+                    const c = STATE.coins[i];
+                    if (Math.hypot(h.x - c.x, h.y - c.y) < h.r + c.r) {
+                        STATE.score += 25;
+                        DOM.score.textContent = STATE.score;
+                        playSynthFx('coin');
+                        triggerExplosionCloud(c.x, c.y, '#ffd700');
+                        STATE.coins.splice(i, 1);
+                    }
+                }
+
+                // Meteor Damage Pipe
+                for (let i = STATE.meteors.length - 1; i >= 0; i--) {
+                    const m = STATE.meteors[i];
+                    if (Math.hypot(h.x - m.x, h.y - m.y) < h.r + m.r) {
+                        terminateEngineLoop(); return;
+                    }
+                }
+
+                // CRITICAL: 67 BOSS INTERPOLATED RAINBOW CONVERSION TRIGGER
+                for (let i = STATE.boss67.length - 1; i >= 0; i--) {
+                    const b = STATE.boss67[i];
+                    if (Math.hypot(h.x - b.x, h.y - b.y) < h.r + b.r) {
+                        playSynthFx('hit');
+                        STATE.rainbowFrames = 80;
+                        document.body.classList.add('rainbow-flash');
+                        triggerExplosionCloud(b.x, b.y, '#ffcc00');
+                        STATE.boss67.splice(i, 1);
+                    }
+                }
+            }
+
+            function mainEngineTickLoop() {
+                if (!STATE.running) return;
+
+                STATE.frameCount++;
+                if (STATE.rainbowFrames > 0) {
+                    STATE.rainbowFrames--;
+                    if (STATE.rainbowFrames === 0) document.body.classList.remove('rainbow-flash');
+                }
+
+                // Runtime Generator Framework
+                if (STATE.frameCount % 40 === 0) STATE.coins.push(new GoldCoin());
+                if (STATE.frameCount % 80 === 0) STATE.meteors.push(new MeteorShard());
+                if (STATE.frameCount % 130 === 0) STATE.boss67.push(new Enemy67());
+
+                // Update Position Transforms
+                STATE.hero.update();
+                [STATE.coins, STATE.meteors, STATE.boss67].forEach(arr => {
+                    for (let i = arr.length - 1; i >= 0; i--) {
+                        arr[i].update();
+                        if (arr[i].y > CONFIG.HEIGHT + 60) arr.splice(i, 1);
+                    }
+                });
+
+                for (let i = STATE.particles.length - 1; i >= 0; i--) {
+                    STATE.particles[i].update();
+                    if (STATE.particles[i].life <= 0) STATE.particles.splice(i, 1);
+                }
+
+                handleCollisionsAndVerification();
+
+                // Clear & Redraw Canvas Frame Context
+                const ctx = STATE.ctx;
+                ctx.fillStyle = '#020206'; ctx.fillRect(0, 0, CONFIG.WIDTH, CONFIG.HEIGHT);
+
+                // Grid lines layout mapping
+                ctx.strokeStyle = 'rgba(0, 242, 254, 0.04)'; ctx.lineWidth = 1;
+                for (let x = 0; x < CONFIG.WIDTH; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, CONFIG.HEIGHT); ctx.stroke(); }
+
+                // Draw Entities Pool Instances
+                STATE.coins.forEach(o => o.draw(ctx));
+                STATE.meteors.forEach(o => o.draw(ctx));
+                STATE.boss67.forEach(o => o.draw(ctx));
+                STATE.hero.draw(ctx);
+                STATE.particles.forEach(o => o.draw(ctx));
+
+                requestAnimationFrame(mainEngineTickLoop);
+            }
+
+            function bootUpSequence() {
+                unlockAudioNode();
+                
+                // Memory Flush and UI Transformation Block
+                STATE.score = 0;
+                STATE.frameCount = 0;
+                STATE.gameOver = false;
+                STATE.coins = []; STATE.meteors = []; STATE.boss67 = []; STATE.particles = [];
+                DOM.score.textContent = '0';
+
+                STATE.hero = new CyberBalloon();
+                STATE.running = true;
+
+                DOM.mask.style.display = 'none';
+                DOM.hud.style.display = 'flex';
+
+                // Bind Controls Bindings Instantly
+                window.addEventListener('keydown', handleKeys);
+                window.addEventListener('keyup', handleKeys);
+                window.addEventListener('touchstart', handleTouches);
+                window.addEventListener('touchend', () => { STATE.input.left = false; STATE.input.right = false; });
+
+                requestAnimationFrame(mainEngineTickLoop);
+            }
+
+            function handleKeys(e) {
+                const active = e.type === 'keydown';
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { STATE.input.left = active; if (active) playSynthFx('move'); }
+                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { STATE.input.right = active; if (active) playSynthFx('move'); }
+            }
+
+            function handleTouches(e) {
+                unlockAudioNode();
+                if (e.touches.length > 0) {
+                    const tx = e.touches[0].clientX;
+                    if (tx < window.innerWidth / 2) STATE.input.left = true; else STATE.input.right = true;
+                    playSynthFx('move');
+                }
+            }
+
+            function terminateEngineLoop() {
+                STATE.running = false;
+                STATE.gameOver = true;
+                document.body.classList.remove('rainbow-flash');
+
+                if (STATE.score > STATE.highScore) {
+                    STATE.highScore = STATE.score;
+                    localStorage.setItem('cyber_high', STATE.highScore.toString());
+                    DOM.high.textContent = STATE.highScore;
+                }
+
+                DOM.btn.textContent = 'START GAME';
+                DOM.mask.style.display = 'flex';
+                DOM.hud.style.display = 'none';
+            }
+        })();
+    </script>
 </body>
 </html>
