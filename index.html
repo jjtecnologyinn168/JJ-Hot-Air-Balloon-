@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meme Snake 67 - Universal Premium</title>
+    <title>Meme Snake 67 - Ultimate Glow Edition</title>
     <style>
         * {
             box-sizing: border-box;
@@ -11,9 +11,9 @@
             padding: 0;
         }
         body {
-            background: radial-gradient(circle at center, #181530 0%, #06040a 100%);
+            background: radial-gradient(circle at center, #14112a 0%, #050408 100%);
             color: #fff;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,31 +24,45 @@
             -webkit-user-select: none;
             user-select: none;
         }
+        /* 优化：增大画面尺寸，iPad上更饱满，手机上自动缩放自适应 */
         #game-container {
             position: relative;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.8);
             border-radius: 24px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.08);
-            width: 95vw;
-            max-width: 800px;
-            aspect-ratio: 4 / 3; 
+            width: 96vw;
+            height: 72vw; /* 保持 4:3 黄金大画面 */
+            max-width: 1024px; /* iPad 上允许展现的最大宽度 */
+            max-height: 768px;
+        }
+        @media (max-aspect-ratio: 4/3) {
+            #game-container {
+                width: 96vw;
+                height: 72vw;
+            }
+        }
+        @media (min-aspect-ratio: 4/3) {
+            #game-container {
+                height: 90vh;
+                width: 120vh; /* 宽屏设备下优化 */
+            }
         }
         canvas {
             display: block;
-            background: #090712;
+            background: #080610;
             width: 100%;
             height: 100%;
         }
-        /* 毛玻璃 UI 图层 */
+        /* 毛玻璃 UI */
         #ui-layer {
             position: absolute;
             top: 20px;
             left: 20px;
             padding: 12px 18px;
-            background: rgba(255, 255, 255, 0.05);
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.04);
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
             font-size: 13px; 
@@ -59,7 +73,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             z-index: 5;
         }
         #speed-controller {
@@ -97,7 +111,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #06040a;
+            background: #050408;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -114,7 +128,7 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 12px 35px rgba(255, 234, 0, 0.3);
+            box-shadow: 0 12px 35px rgba(255, 234, 0, 0.4);
         }
     </style>
 </head>
@@ -260,9 +274,25 @@
         let food = { x: 0, y: 0, radius: 16, pulse: 1, type: '🍎' };
         const fruits = ['🍎', '🍌', '🍓', '🍩', '🍕', '🍇', '🍉', '🥑', '🍔', '🍟'];
 
+        // 优化：智能避让算法，防止食物刷到左上角 UI 区域和右上角速度区
         function respawnFood() {
-            food.x = Math.random() * (canvas.width - 100) + 50;
-            food.y = Math.random() * (canvas.height - 100) + 50;
+            let valid = false;
+            let rx, ry;
+            
+            while (!valid) {
+                rx = Math.random() * (canvas.width - 100) + 50;
+                ry = Math.random() * (canvas.height - 100) + 50;
+                
+                // 避开左上角 UI 区域 (x < 240, y < 140) 
+                if (rx < 240 && ry < 140) continue;
+                // 避开右上角速度区域 (x > 560, y < 80)
+                if (rx > 560 && ry < 80) continue;
+                
+                valid = true;
+            }
+
+            food.x = rx;
+            food.y = ry;
             
             let dynamicChance = 0.20; 
             if (consecutiveNon67Count > 4) dynamicChance = 0.50; 
@@ -359,18 +389,26 @@
         }
 
         function draw() {
-            // 完美兼容 iPad：吃到67时的五颜六色蹦迪背景（使用全彩渐变色域流转）
             if (goofyMemeTimer > 0) {
                 let hue = (Date.now() * 0.4) % 360;
-                ctx.fillStyle = `hsla(${hue}, 85%, 15%, 1)`;
+                ctx.fillStyle = `hsla(${hue}, 85%, 14%, 1)`;
             } else {
-                ctx.fillStyle = '#110e1c'; 
+                ctx.fillStyle = '#0a0813'; 
             }
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 1. 绘制蛇身（安全绘制，绝不发黑）
+            // iPad 安全版高级发光技术：通过高透明色块多层叠加，模拟出完美的电竞发光，绝不变黑！
+            let mainColor, glowColor;
+            if (currentSkin === 'BLUE') {
+                mainColor = '#00e5ff'; glowColor = 'rgba(0, 229, 255, 0.3)';
+            } else if (currentSkin === 'GOLD') {
+                mainColor = '#ffea00'; glowColor = 'rgba(255, 234, 0, 0.3)';
+            } else {
+                mainColor = '#00ff66'; glowColor = 'rgba(0, 255, 102, 0.3)';
+            }
+
+            // 1. 绘制蛇（发光外圈 + 实体内圈）
             snake.forEach((segment, index) => {
-                ctx.beginPath();
                 let renderX = segment.x;
                 let renderY = segment.y;
 
@@ -379,45 +417,41 @@
                     renderY += Math.cos(waveTimer + index * 0.8) * 14 * Math.cos(angle + Math.PI/2);
                 }
 
-                if (index === 0) {
-                    ctx.arc(renderX, renderY, radius * 1.3, 0, Math.PI * 2); 
-                    
-                    if (currentSkin === 'BLUE') ctx.fillStyle = '#00e5ff';
-                    else if (currentSkin === 'GOLD') ctx.fillStyle = '#ffea00';
-                    else ctx.fillStyle = '#00ff66'; 
-                    
-                    ctx.fill();
+                let bodyRadius = index === 0 ? radius * 1.3 : radius * (1 - index / (snake.length + 12));
+                if (bodyRadius < 3) bodyRadius = 3;
 
-                    // 眼睛
+                // 绘制安全发光晕层
+                ctx.beginPath();
+                ctx.arc(renderX, renderY, bodyRadius + 6, 0, Math.PI * 2);
+                ctx.fillStyle = glowColor;
+                ctx.fill();
+
+                // 绘制实体中心
+                ctx.beginPath();
+                ctx.arc(renderX, renderY, bodyRadius, 0, Math.PI * 2);
+                if (index === 0) {
+                    ctx.fillStyle = mainColor;
+                } else {
+                    ctx.fillStyle = index % 2 === 0 ? mainColor : 'rgba(255,255,255,0.2)';
+                }
+                ctx.fill();
+
+                // 头部画眼
+                if (index === 0) {
                     let eyeOffsetAngle = 0.5; 
                     let leftEyeX = renderX + Math.cos(angle - eyeOffsetAngle) * 10;
                     let leftEyeY = renderY + Math.sin(angle - eyeOffsetAngle) * 10;
                     ctx.beginPath(); ctx.arc(leftEyeX, leftEyeY, 5, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-                    ctx.beginPath(); 
-                    let pupilOffset = goofyMemeTimer > 0 ? 1 : 2.5;
-                    ctx.arc(leftEyeX, leftEyeY, pupilOffset, 0, Math.PI * 2); ctx.fillStyle = '#000000'; ctx.fill();
+                    ctx.beginPath(); ctx.arc(leftEyeX, leftEyeY, goofyMemeTimer > 0 ? 1 : 2.5, 0, Math.PI * 2); ctx.fillStyle = '#000000'; ctx.fill();
 
                     let rightEyeX = renderX + Math.cos(angle + eyeOffsetAngle) * 10;
                     let rightEyeY = renderY + Math.sin(angle + eyeOffsetAngle) * 10;
                     ctx.beginPath(); ctx.arc(rightEyeX, rightEyeY, 5, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-                    ctx.beginPath(); ctx.arc(rightEyeX, rightEyeY, pupilOffset, 0, Math.PI * 2); ctx.fillStyle = '#000000'; ctx.fill();
-                } else {
-                    let bodyRadius = radius * (1 - index / (snake.length + 12));
-                    if(bodyRadius < 3) bodyRadius = 3;
-                    ctx.arc(renderX, renderY, bodyRadius, 0, Math.PI * 2);
-                    
-                    if (currentSkin === 'BLUE') {
-                        ctx.fillStyle = index % 2 === 0 ? '#00b0ff' : '#0077ff';
-                    } else if (currentSkin === 'GOLD') {
-                        ctx.fillStyle = index % 2 === 0 ? '#ffd700' : '#ff9100';
-                    } else {
-                        ctx.fillStyle = index % 2 === 0 ? '#00cc55' : '#00aa44'; 
-                    }
-                    ctx.fill();
+                    ctx.beginPath(); ctx.arc(rightEyeX, rightEyeY, goofyMemeTimer > 0 ? 1 : 2.5, 0, Math.PI * 2); ctx.fillStyle = '#000000'; ctx.fill();
                 }
             });
 
-            // 2. 绘制食物（彻底移除 shadowBlur 滤镜，完美修复 iPad 变黑问题）
+            // 2. 绘制食物
             ctx.save();
             ctx.translate(food.x, food.y);
             let currentScale = food.pulse;
@@ -426,6 +460,12 @@
             ctx.textBaseline = "middle";
             
             if (food.type === '67') {
+                // 为 67 渲染安全霓虹光环
+                ctx.beginPath();
+                ctx.arc(0, 0, 35, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 234, 0, 0.25)';
+                ctx.fill();
+
                 ctx.font = "900 64px Impact, Arial Black, sans-serif"; 
                 ctx.fillStyle = '#ffea00'; 
                 ctx.fillText(food.type, 0, 0);
@@ -435,7 +475,7 @@
             }
             ctx.restore();
 
-            // 恶搞魔性英文标签
+            // 飘字魔性标签
             if (memeTextTimer > 0) {
                 ctx.save();
                 ctx.fillStyle = memeTextTimer % 4 === 0 ? '#00ffff' : '#ff0055'; 
@@ -446,7 +486,7 @@
                 ctx.restore();
             }
 
-            // 游戏结束面板
+            // Game Over 面板
             if (isGameOver) {
                 ctx.fillStyle = 'rgba(5, 3, 10, 0.85)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
