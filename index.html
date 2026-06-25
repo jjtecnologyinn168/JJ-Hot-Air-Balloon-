@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meme Snake 67 - Cyberpunk Premium Edition</title>
+    <title>Meme Snake 67 - Universal Premium</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +13,7 @@
         body {
             background: radial-gradient(circle at center, #181530 0%, #06040a 100%);
             color: #fff;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -26,7 +26,7 @@
         }
         #game-container {
             position: relative;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 40px rgba(123, 97, 255, 0.15);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
             border-radius: 24px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.08);
@@ -40,22 +40,22 @@
             width: 100%;
             height: 100%;
         }
-        /* 高級感：微光毛玻璃 UI 图层 */
+        /* 毛玻璃 UI 图层 */
         #ui-layer {
             position: absolute;
             top: 20px;
             left: 20px;
             padding: 12px 18px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.05);
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
             font-size: 13px; 
             font-weight: 800;
             letter-spacing: 1.5px;
             pointer-events: none;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-family: monospace;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -70,7 +70,7 @@
             gap: 6px;
             z-index: 5;
             padding: 4px;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
@@ -83,14 +83,13 @@
             border: none;
             border-radius: 7px;
             cursor: pointer;
-            font-family: ui-monospace, SFMono-Regular, monospace;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: monospace;
+            transition: all 0.2s ease;
         }
         .speed-btn.active {
             background: #ffea00;
             color: #090712;
             font-weight: 800;
-            box-shadow: 0 4px 15px rgba(255, 234, 0, 0.3);
         }
         #start-menu {
             position: absolute;
@@ -111,16 +110,11 @@
             font-weight: 900;
             letter-spacing: 2px;
             color: #06040a;
-            background: linear-gradient(135deg, #ffea00 0%, #ffaa00 100%);
+            background: #ffea00;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 12px 35px rgba(255, 213, 0, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        #play-btn:active {
-            transform: scale(0.96);
-            box-shadow: 0 6px 20px rgba(255, 213, 0, 0.2);
+            box-shadow: 0 12px 35px rgba(255, 234, 0, 0.3);
         }
     </style>
 </head>
@@ -365,27 +359,16 @@
         }
 
         function draw() {
-            // 高級視覺升級：吃到 67 时呈现实时炫目流光粒子色彩
+            // 完美兼容 iPad：吃到67时的五颜六色蹦迪背景（使用全彩渐变色域流转）
             if (goofyMemeTimer > 0) {
                 let hue = (Date.now() * 0.4) % 360;
-                let grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 10, canvas.width/2, canvas.height/2, canvas.width*0.8);
-                grad.addColorStop(0, `hsla(${hue}, 90%, 18%, 1)`);
-                grad.addColorStop(1, '#05030a');
-                ctx.fillStyle = grad;
+                ctx.fillStyle = `hsla(${hue}, 85%, 15%, 1)`;
             } else {
-                // 普通状态：高级黑灰放射渐变背景
-                let grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 50, canvas.width/2, canvas.height/2, canvas.width*0.7);
-                grad.addColorStop(0, '#120f24');
-                grad.addColorStop(1, '#07050e');
-                ctx.fillStyle = grad;
+                ctx.fillStyle = '#110e1c'; 
             }
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 高級視覺升級：开启发光层混合模式
-            ctx.save();
-            ctx.shadowBlur = 15;
-
-            // 1. 绘制蛇身
+            // 1. 绘制蛇身（安全绘制，绝不发黑）
             snake.forEach((segment, index) => {
                 ctx.beginPath();
                 let renderX = segment.x;
@@ -399,19 +382,13 @@
                 if (index === 0) {
                     ctx.arc(renderX, renderY, radius * 1.3, 0, Math.PI * 2); 
                     
-                    if (currentSkin === 'BLUE') {
-                        ctx.fillStyle = '#00e5ff';
-                        ctx.shadowColor = '#00e5ff';
-                    } else if (currentSkin === 'GOLD') {
-                        ctx.fillStyle = '#ffea00';
-                        ctx.shadowColor = '#ffea00';
-                    } else {
-                        ctx.fillStyle = '#00ff66'; 
-                        ctx.shadowColor = '#00ff66';
-                    }
+                    if (currentSkin === 'BLUE') ctx.fillStyle = '#00e5ff';
+                    else if (currentSkin === 'GOLD') ctx.fillStyle = '#ffea00';
+                    else ctx.fillStyle = '#00ff66'; 
                     
                     ctx.fill();
 
+                    // 眼睛
                     let eyeOffsetAngle = 0.5; 
                     let leftEyeX = renderX + Math.cos(angle - eyeOffsetAngle) * 10;
                     let leftEyeY = renderY + Math.sin(angle - eyeOffsetAngle) * 10;
@@ -431,20 +408,16 @@
                     
                     if (currentSkin === 'BLUE') {
                         ctx.fillStyle = index % 2 === 0 ? '#00b0ff' : '#0077ff';
-                        ctx.shadowColor = '#00b0ff';
                     } else if (currentSkin === 'GOLD') {
                         ctx.fillStyle = index % 2 === 0 ? '#ffd700' : '#ff9100';
-                        ctx.shadowColor = '#ffd700';
                     } else {
                         ctx.fillStyle = index % 2 === 0 ? '#00cc55' : '#00aa44'; 
-                        ctx.shadowColor = '#00ff66';
                     }
                     ctx.fill();
                 }
             });
-            ctx.restore();
 
-            // 2. 绘制食物（高级微光渲染）
+            // 2. 绘制食物（彻底移除 shadowBlur 滤镜，完美修复 iPad 变黑问题）
             ctx.save();
             ctx.translate(food.x, food.y);
             let currentScale = food.pulse;
@@ -453,55 +426,38 @@
             ctx.textBaseline = "middle";
             
             if (food.type === '67') {
-                ctx.shadowBlur = 35; 
-                ctx.shadowColor = '#ffea00';
                 ctx.font = "900 64px Impact, Arial Black, sans-serif"; 
-                // 高级黄金渐变色文字
-                let textGrad = ctx.createLinearGradient(-20, -20, 20, 20);
-                textGrad.addColorStop(0, '#ffffff');
-                textGrad.addColorStop(0.5, '#ffea00');
-                textGrad.addColorStop(1, '#ff9100');
-                ctx.fillStyle = textGrad; 
+                ctx.fillStyle = '#ffea00'; 
                 ctx.fillText(food.type, 0, 0);
             } else {
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = 'rgba(255,255,255,0.2)';
                 ctx.font = "36px serif";
                 ctx.fillText(food.type, 0, 0); 
             }
             ctx.restore();
 
-            // 恶搞英文高级动效
+            // 恶搞魔性英文标签
             if (memeTextTimer > 0) {
                 ctx.save();
                 ctx.fillStyle = memeTextTimer % 4 === 0 ? '#00ffff' : '#ff0055'; 
                 ctx.font = '900 42px Impact, Arial Black, sans-serif';
                 ctx.textAlign = 'center';
-                ctx.shadowBlur = 20;
-                ctx.shadowColor = ctx.fillStyle;
                 let textShakeY = Math.sin(Date.now() * 0.06) * 7;
                 ctx.fillText(lastMemeMessage, canvas.width / 2, 115 + textShakeY);
                 ctx.restore();
             }
 
-            // 3. 游戏结束面板高阶重绘
+            // 游戏结束面板
             if (isGameOver) {
                 ctx.fillStyle = 'rgba(5, 3, 10, 0.85)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                ctx.save();
-                ctx.shadowBlur = 25;
-                ctx.shadowColor = '#ff0055';
                 ctx.fillStyle = '#ff0055';
                 ctx.font = '900 50px system-ui, sans-serif'; 
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 25);
-                ctx.restore();
 
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.font = '600 14px ui-monospace, monospace'; 
-                ctx.letterSpacing = '2px';
+                ctx.font = '600 14px monospace'; 
                 ctx.fillText('TAP SCREEN TO RESTART', canvas.width / 2, canvas.height / 2 + 45);
             }
         }
